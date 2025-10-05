@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lịch sử đơn hàng</title>
+    <style>
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+<h2 style="text-align:center;">Lịch sử đơn hàng của bạn</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Mã đơn hàng</th>
+        <th>Nhà hàng</th>
+        <th>Ngày đặt</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.restaurant.title}"></td>
+        <td th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${order.totalPrice} + ' ₫'"></td>
+
+
+        <td th:switch="${order.status}">
+            <span th:case="0">Đang xử lý</span>
+            <span th:case="1">Hoàn thành</span>
+            <span th:case="2">Đã hủy</span>
+            <span th:case="*">Không xác định</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

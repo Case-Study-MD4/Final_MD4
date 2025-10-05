@@ -1,0 +1,275 @@
+
+drop database if exists osahaneat;
+create database osahaneat character set utf8mb4 collate utf8mb4_unicode_ci;
+use osahaneat;
+
+set foreign_key_checks = 0;
+
+-- =========================
+-- 1) roles
+-- =========================
+create table roles (
+  id int auto_increment primary key,
+  role_name varchar(50) not null,
+  create_date timestamp default current_timestamp
+);
+
+-- =========================
+-- 2) accounts
+-- =========================
+create table accounts (
+  id int auto_increment primary key,
+  user_name varchar(100) not null unique,
+  password varchar(255) not null,
+  create_date timestamp default current_timestamp,
+  role_id int,
+  foreign key (role_id) references roles(id)
+    on delete set null
+    on update cascade
+);
+
+-- =========================
+-- 3) users (profile info)
+-- =========================
+create table users (
+  id int auto_increment primary key,
+  account_id int not null unique,
+  fullname varchar(100),
+  avatar text,
+  phone varchar(20),
+  address varchar(255),
+  create_date timestamp default current_timestamp,
+  foreign key (account_id) references accounts(id)
+    on delete cascade
+    on update cascade
+);
+
+-- =========================
+-- 4) categories
+-- =========================
+create table categories (
+  id int auto_increment primary key,
+  name_cate varchar(100),
+  create_date timestamp default current_timestamp
+);
+
+-- =========================
+-- 5) restaurants
+-- =========================
+create table restaurants (
+  id int auto_increment primary key,
+  title varchar(255),
+  subtitle varchar(255),
+  description text,
+  image text,
+  is_freeship boolean default false,
+  address varchar(255),
+  open_date timestamp default current_timestamp,
+  owner_account_id int null unique,
+  foreign key (owner_account_id) references accounts(id)
+    on delete set null
+    on update cascade
+);
+
+-- =========================
+-- 6) foods
+-- =========================
+create table foods (
+  id int auto_increment primary key,
+  title varchar(255),
+  image text,
+  time_ship varchar(20),
+  price decimal(10,2),
+  cate_id int,
+  foreign key (cate_id) references categories(id)
+    on delete set null
+    on update cascade
+);
+
+-- =========================
+-- 7) menu_restaurant (food per restaurant)
+-- =========================
+create table menu_restaurant (
+  res_id int not null,
+  food_id int not null,
+  create_date timestamp default current_timestamp,
+  primary key (res_id, food_id),
+  foreign key (res_id) references restaurants(id)
+    on delete cascade
+    on update cascade,
+  foreign key (food_id) references foods(id)
+    on delete cascade
+    on update cascade
+);
+
+-- =========================
+-- 8) orders
+-- =========================
+create table orders (
+  id int auto_increment primary key,
+  user_id int,
+  res_id int,
+  create_date timestamp default current_timestamp,
+  total_price decimal(12,2) not null default 0.00,
+  status int default 0,
+  foreign key (user_id) references users(id)
+    on delete cascade
+    on update cascade,
+  foreign key (res_id) references restaurants(id)
+    on delete set null
+    on update cascade
+);
+
+-- =========================
+-- 9) order_items
+-- =========================
+create table order_items (
+  order_id int not null,
+  food_id int not null,
+  quantity int not null default 1,
+  price decimal(12,2) not null default 0.00,
+  primary key (order_id, food_id),
+  foreign key (order_id) references orders(id)
+    on delete cascade
+    on update cascade,
+  foreign key (food_id) references foods(id)
+    on delete cascade
+    on update cascade
+);
+
+-- =========================
+-- 10) rating_food
+-- =========================
+create table rating_food (
+  id int auto_increment primary key,
+  user_id int,
+  food_id int,
+  content text,
+  rate_point int,
+  rating_food_date datetime default current_timestamp,
+  foreign key (user_id) references users(id)
+    on delete cascade
+    on update cascade,
+  foreign key (food_id) references foods(id)
+    on delete cascade
+    on update cascade
+);
+
+-- =========================
+-- 11) rating_restaurant
+-- =========================
+create table rating_restaurant (
+  id int auto_increment primary key,
+  user_id int,
+  res_id int,
+  content text,
+  rate_point int,
+  rating_restaurant_date datetime default current_timestamp,
+  foreign key (user_id) references users(id)
+    on delete cascade
+    on update cascade,
+  foreign key (res_id) references restaurants(id)
+    on delete cascade
+    on update cascade
+);
+
+-- =========================
+-- 12) images (soft relation, no fk)
+-- =========================
+create table images (
+  id int auto_increment primary key,
+  res_id int null,
+  food_id int null,
+  image text not null,
+  create_date timestamp default current_timestamp,
+  key idx_images_res_id (res_id),
+  key idx_images_food_id (food_id)
+);
+
+set foreign_key_checks = 1;
+
+-- =========================
+-- 13) triggers for soft integrity on images
+-- =========================
+delimiter //
+
+create trigger bi_images_validate
+before insert on images
+for each row
+begin
+  if (new.res_id is null and new.food_id is null)
+     or (new.res_id is not null and new.food_id is not null) then
+    signal sqlstate '45000'
+      set message_text = 'exactly one of res_id or food_id must be set';
+  end if;
+
+  if new.res_id is not null and
+     (select count(*) from restaurants where id = new.res_id) = 0 then
+    signal sqlstate '45000'
+      set message_text = 'invalid res_id: restaurant does not exist';
+  end if;
+
+  if new.food_id is not null and
+     (select count(*) from foods where id = new.food_id) = 0 then
+    signal sqlstate '45000'
+      set message_text = 'invalid food_id: food does not exist';
+  end if;
+end//
+  
+create trigger bu_images_validate
+before update on images
+for each row
+begin
+  if (new.res_id is null and new.food_id is null)
+     or (new.res_id is not null and new.food_id is not null) then
+    signal sqlstate '45000'
+      set message_text = 'exactly one of res_id or food_id must be set';
+  end if;
+
+  if new.res_id is not null and
+     (select count(*) from restaurants where id = new.res_id) = 0 then
+    signal sqlstate '45000'
+      set message_text = 'invalid res_id: restaurant does not exist';
+  end if;
+
+  if new.food_id is not null and
+     (select count(*) from foods where id = new.food_id) = 0 then
+    signal sqlstate '45000'
+      set message_text = 'invalid food_id: food does not exist';
+  end if;
+end//
+
+create trigger ad_restaurants_cleanup
+after delete on restaurants
+for each row
+begin
+  delete from images where res_id = old.id;
+end//
+
+create trigger ad_foods_cleanup
+after delete on foods
+for each row
+begin
+  delete from images where food_id = old.id;
+end//
+
+create trigger au_restaurants_propagate_id
+after update on restaurants
+for each row
+begin
+  if new.id <> old.id then
+    update images set res_id = new.id where res_id = old.id;
+  end if;
+end//
+
+create trigger au_foods_propagate_id
+after update on foods
+for each row
+begin
+  if new.id <> old.id then
+    update images set food_id = new.id where food_id = old.id;
+  end if;
+end//
+
+delimiter ;
+
