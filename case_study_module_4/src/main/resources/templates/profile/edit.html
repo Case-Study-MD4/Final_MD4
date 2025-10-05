@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật thông tin cá nhân</title>
+    <style>
+        .container {
+            width: 520px;
+            margin: 30px auto;
+            font-family: sans-serif;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: #b00020;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .alert {
+            padding: 10px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background: #e6ffed;
+            border: 1px solid #a6f3b5;
+            color: #185c28;
+        }
+
+        button {
+            margin-top: 14px;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e4fd1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Chỉnh sửa thông tin</h2>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <form th:action="@{/profile/edit}" th:object="${profile}" method="post">
+<!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
+        <label for="fullname">Họ và tên</label>
+        <input id="fullname" type="text" th:field="*{fullname}" placeholder="Nhập họ tên">
+        <div class="error" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}">Lỗi họ tên</div>
+
+        <label for="phone">Số điện thoại</label>
+        <input id="phone" type="text" th:field="*{phone}" placeholder="Nhập số điện thoại">
+        <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Lỗi số điện thoại</div>
+
+        <label for="address">Địa chỉ</label>
+        <textarea id="address" rows="3" th:field="*{address}" placeholder="Nhập địa chỉ"></textarea>
+        <div class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Lỗi địa chỉ</div>
+
+        <button type="submit">Lưu thay đổi</button>
+    </form>
+</div>
+</body>
+</html>
