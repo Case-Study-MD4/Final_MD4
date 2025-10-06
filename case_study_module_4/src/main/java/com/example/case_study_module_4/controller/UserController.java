@@ -21,8 +21,8 @@ public class UserController {
 
 
 
-    private Integer currentUserId() {
-        return 1;
+    private Long currentUserId() {
+        return 1L;
     }
 
     @GetMapping("/edit")
