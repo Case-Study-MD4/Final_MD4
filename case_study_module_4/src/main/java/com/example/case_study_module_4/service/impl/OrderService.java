@@ -10,7 +10,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements IOrderService {
+public class
+OrderService implements IOrderService {
 
     private final IOrderRepository orderRepository;
 
