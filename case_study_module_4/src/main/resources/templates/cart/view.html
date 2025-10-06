@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng của bạn</title>
+    <style>
+        body { font-family: Inter, sans-serif; background: #f9fafb; color: #333; padding: 40px; }
+        h2 { color: #e67e22; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px; }
+        th, td { padding: 12px 16px; border-bottom: 1px solid #eee; }
+        th { background: #f39c12; color: white; }
+        tr:hover { background: #fdf2e9; }
+        .total { text-align: right; margin-top: 15px; font-weight: bold; }
+        .actions { text-align: right; margin-top: 20px; }
+        .btn {
+            background: #e67e22; color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; cursor: pointer; text-decoration: none;
+        }
+        .btn:hover { background: #d35400; }
+        a.remove { color: #c0392b; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<h2>🛒 Giỏ hàng của bạn</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Tên món</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+        <th>Xoá</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${cartItems}">
+        <td th:text="${item.foodName}"></td>
+        <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+        <td><a class="remove" th:href="@{'/cart/remove/' + ${item.foodId}}">X</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="total">
+    Tổng cộng: <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+</div>
+
+<div class="actions">
+    <form th:action="@{/cart/checkout}" method="post">
+        <input type="hidden" name="restaurantId" value="1"/>
+        <button type="submit" class="btn">Đặt hàng</button>
+    </form>
+</div>
+
+</body>
+</html>
