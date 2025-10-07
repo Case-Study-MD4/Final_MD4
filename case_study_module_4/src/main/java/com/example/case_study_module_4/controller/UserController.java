@@ -29,7 +29,7 @@ public class UserController {
     public String showEditForm(Model model) {
         User user = userService.getById(currentUserId());
         UserDto dto = new UserDto();
-        dto.setFullname(user.getFullname());
+        dto.setFullName(user.getFullname());
         dto.setPhone(user.getPhone());
         dto.setAddress(user.getAddress());
         model.addAttribute("profile", dto);

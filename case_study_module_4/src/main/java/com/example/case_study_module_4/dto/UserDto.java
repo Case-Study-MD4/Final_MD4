@@ -16,7 +16,7 @@ public class UserDto {
     @NotBlank(message = "Họ tên không được để trống")
     @Size(max = 100, message = "Họ tên tối đa 100 ký tự")
     @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Họ tên không được chứa số hoặc ký tự đặc biệt")
-    private String fullname;
+    private String fullName;
 
 
     @Pattern(regexp = "^(|0\\d{9,10}|\\+?\\d{9,15})$", message = "Số điện thoại không hợp lệ")
