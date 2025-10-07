@@ -2,7 +2,9 @@ package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.dto.CreateOrderDto;
+import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.Order;
+import com.example.case_study_module_4.repository.IFoodRepository;
 import com.example.case_study_module_4.service.IOrderService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import java.util.List;
 public class CartController {
 
     private final IOrderService orderService;
+    private final IFoodRepository foodRepository;
 
     // ✅ Hiển thị giỏ hàng
     @GetMapping
@@ -26,30 +30,50 @@ public class CartController {
         List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
         if (cart == null) cart = new ArrayList<>();
 
-        model.addAttribute("cartItems", cart);
-        model.addAttribute("total", cart.stream()
-                .map(item -> item.getPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())))
-                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
+        BigDecimal total = cart.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        model.addAttribute("cartItems", cart);
+        model.addAttribute("total", total);
         return "cart/view";
     }
 
     // ✅ Thêm món vào giỏ
     @PostMapping("/add")
-    public String addToCart(@ModelAttribute CartItemDto item, HttpSession session) {
+    public String addToCart(@RequestParam("foodId") Long foodId,
+                            @RequestParam("quantity") int quantity,
+                            HttpSession session) {
+
+        // 1️⃣ Lấy thông tin món ăn từ DB
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn"));
+
+        // 2️⃣ Lấy giỏ hàng hiện tại
         List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
         if (cart == null) cart = new ArrayList<>();
 
+        // 3️⃣ Nếu món đã có trong giỏ thì tăng số lượng
         boolean exists = false;
-        for (CartItemDto i : cart) {
-            if (i.getFoodId().equals(item.getFoodId())) {
-                i.setQuantity(i.getQuantity() + item.getQuantity());
+        for (CartItemDto item : cart) {
+            if (item.getFoodId().equals(foodId)) {
+                item.setQuantity(item.getQuantity() + quantity);
                 exists = true;
                 break;
             }
         }
-        if (!exists) cart.add(item);
 
+        // 4️⃣ Nếu chưa có thì thêm mới
+        if (!exists) {
+            cart.add(new CartItemDto(
+                    food.getId(),
+                    food.getTitle(),
+                    food.getPrice(),
+                    quantity
+            ));
+        }
+
+        // 5️⃣ Lưu lại vào session
         session.setAttribute("cart", cart);
         return "redirect:/cart";
     }
@@ -77,10 +101,8 @@ public class CartController {
         dto.setItems(cart);
 
         Order order = orderService.createOrder(dto);
-
-        // xoá giỏ hàng sau khi đặt
         session.removeAttribute("cart");
 
-        return "redirect:/orders/" + order.getId();
+        return "redirect:/orders/success/" + order.getId();
     }
 }

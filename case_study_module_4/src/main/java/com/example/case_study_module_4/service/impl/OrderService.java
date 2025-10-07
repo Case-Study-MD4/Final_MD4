@@ -72,4 +72,11 @@ public class OrderService implements IOrderService {
         return orderRepository.save(order);
     }
 
+    @Override
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
+    }
+
+
 }
