@@ -21,7 +21,7 @@ public class OrderController {
     @GetMapping("/history")
     public String getOrderHistory(Model model) {
         // Sau này thay bằng SecurityContextHolder.getContext().getAuthentication()
-        Long currentUserId = 1L; // tạm giả định user_id = 1
+        Long currentUserId = 1L;
         List<Order> orders = orderService.getOrdersByUser(currentUserId);
 
         model.addAttribute("orders", orders);
