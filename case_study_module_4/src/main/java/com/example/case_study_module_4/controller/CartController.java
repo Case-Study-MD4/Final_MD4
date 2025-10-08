@@ -1,20 +1,24 @@
 package com.example.case_study_module_4.controller;
 
-import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.dto.CreateOrderDto;
 import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.Order;
+import com.example.case_study_module_4.entity.User;
 import com.example.case_study_module_4.repository.IFoodRepository;
+import com.example.case_study_module_4.repository.IUserRepository;
+import com.example.case_study_module_4.service.ICartService;
 import com.example.case_study_module_4.service.IOrderService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/cart")
@@ -23,86 +27,89 @@ public class CartController {
 
     private final IOrderService orderService;
     private final IFoodRepository foodRepository;
+    private final IUserRepository userRepository;
+    private final ICartService cartService;
 
-    // ✅ Hiển thị giỏ hàng
-    @GetMapping
-    public String viewCart(HttpSession session, Model model) {
-        List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
-        if (cart == null) cart = new ArrayList<>();
-
-        BigDecimal total = cart.stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        model.addAttribute("cartItems", cart);
-        model.addAttribute("total", total);
-        return "cart/view";
-    }
-
-    // ✅ Thêm món vào giỏ
     @PostMapping("/add")
     public String addToCart(@RequestParam("foodId") Long foodId,
                             @RequestParam("quantity") int quantity,
-                            HttpSession session) {
-
-        // 1️⃣ Lấy thông tin món ăn từ DB
+                            RedirectAttributes redirect) {
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn"));
 
-        // 2️⃣ Lấy giỏ hàng hiện tại
-        List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
-        if (cart == null) cart = new ArrayList<>();
+        if (!cartService.getCart().isEmpty()) {
+            Long existingRestaurantId = foodRepository.findById(cartService.getCart().get(0).getFoodId())
+                    .map(f -> f.getRestaurant().getId()).orElse(null);
 
-        // 3️⃣ Nếu món đã có trong giỏ thì tăng số lượng
-        boolean exists = false;
-        for (CartItemDto item : cart) {
-            if (item.getFoodId().equals(foodId)) {
-                item.setQuantity(item.getQuantity() + quantity);
-                exists = true;
-                break;
+            if (!existingRestaurantId.equals(food.getRestaurant().getId())) {
+                redirect.addFlashAttribute("error", "Bạn chỉ có thể đặt món từ 1 nhà hàng trong cùng đơn hàng!");
+                return "redirect:/cart";
             }
         }
 
-        // 4️⃣ Nếu chưa có thì thêm mới
-        if (!exists) {
-            cart.add(new CartItemDto(
-                    food.getId(),
-                    food.getTitle(),
-                    food.getPrice(),
-                    quantity
-            ));
-        }
-
-        // 5️⃣ Lưu lại vào session
-        session.setAttribute("cart", cart);
+        cartService.addToCart(food, quantity);
         return "redirect:/cart";
     }
 
-    // ✅ Xoá món khỏi giỏ
-    @GetMapping("/remove/{foodId}")
-    public String removeItem(@PathVariable Long foodId, HttpSession session) {
-        List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
-        if (cart != null) {
-            cart.removeIf(item -> item.getFoodId().equals(foodId));
-            session.setAttribute("cart", cart);
+
+    @GetMapping
+    public String viewCart(Model model) {
+        var cartItems = cartService.getCart();
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("total", cartService.getTotal());
+
+        // ✅ Lấy restaurantId từ món đầu tiên trong giỏ
+        Long restaurantId = null;
+        if (!cartItems.isEmpty()) {
+            Long firstFoodId = cartItems.get(0).getFoodId();
+            restaurantId = foodRepository.findById(firstFoodId)
+                    .map(f -> f.getRestaurant().getId())
+                    .orElse(null);
         }
-        return "redirect:/cart";
+
+        model.addAttribute("restaurantId", restaurantId);
+        return "cart/view";
     }
 
-    // ✅ Đặt hàng
     @PostMapping("/checkout")
-    public String checkout(@RequestParam Long restaurantId, HttpSession session) {
-        List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
-        if (cart == null || cart.isEmpty()) return "redirect:/cart";
+    public String checkout(@RequestParam Long restaurantId,
+                           @RequestParam List<Long> foodIds,
+                           @RequestParam List<Integer> quantities) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userRepository.findByAccount_UserName(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        // ✅ Cập nhật số lượng trong cartService
+        for (int i = 0; i < foodIds.size(); i++) {
+            cartService.updateQuantity(foodIds.get(i), quantities.get(i));
+        }
+
+        // ✅ Tạo đơn hàng
         CreateOrderDto dto = new CreateOrderDto();
-        dto.setUserId(1L); // giả lập user login
+        dto.setUserId(user.getId());
         dto.setRestaurantId(restaurantId);
-        dto.setItems(cart);
+        dto.setItems(cartService.getCart());
 
         Order order = orderService.createOrder(dto);
-        session.removeAttribute("cart");
+        cartService.clear();
 
         return "redirect:/orders/success/" + order.getId();
     }
+
+
+    @PostMapping("/update")
+    @ResponseBody
+    public Map<String, Object> updateQuantity(@RequestParam("foodId") Long foodId,
+                                              @RequestParam("quantity") int quantity) {
+        cartService.updateQuantity(foodId, quantity);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("total", cartService.getTotal());
+        response.put("itemSubtotal", cartService.getItemSubtotal(foodId));
+        return response;
+    }
+
 }

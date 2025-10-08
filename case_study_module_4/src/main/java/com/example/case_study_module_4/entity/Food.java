@@ -19,5 +19,10 @@ public class Food {
 
     private String title;
     private BigDecimal price;
+    private String imageUrl;
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
 }
 
