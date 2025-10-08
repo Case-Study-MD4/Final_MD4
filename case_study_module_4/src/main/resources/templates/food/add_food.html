@@ -33,7 +33,7 @@
             font-weight: bold;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -82,7 +82,8 @@
 <h2>🥗 Thêm món ăn mới</h2>
 
 <div class="form-container">
-    <form th:action="@{/menu/add_food}" th:object="${foods}" method="post">
+    <form th:action="@{/menu/add_food}" th:object="${food}" method="post">
+
         <label for="title">Tên món ăn</label>
         <input type="text" id="title" th:field="*{title}" placeholder="Nhập tên món..." required>
 
@@ -91,6 +92,14 @@
 
         <label for="imageUrl">Hình ảnh (URL)</label>
         <input type="text" id="imageUrl" th:field="*{imageUrl}" placeholder="Nhập link hình ảnh...">
+
+        <!-- Thêm chọn nhà hàng -->
+        <label for="restaurant">Nhà hàng</label>
+        <select id="restaurant" name="restaurantId" required>
+            <option value="">-- Chọn nhà hàng --</option>
+            <option th:each="r : ${restaurants}" th:value="${r.id}" th:text="${r.title}">Nhà hàng</option>
+        </select>
+
 
         <div class="actions">
             <a th:href="@{/menu}" class="cancel">Hủy</a>
