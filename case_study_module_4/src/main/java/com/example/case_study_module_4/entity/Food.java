@@ -19,5 +19,6 @@ public class Food {
 
     private String title;
     private BigDecimal price;
+    private String imageUrl;
 }
 
