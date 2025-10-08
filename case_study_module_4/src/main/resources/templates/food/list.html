@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh sách món ăn</title>
+
+    <!-- Thư viện Bootstrap + FontAwesome -->
+    <th:block th:replace="~{common/template::library}"></th:block>
+
+    <style>
+        body {
+            background-color: #fafafa;
+        }
+
+        .food-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            overflow: hidden;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .price {
+            font-weight: 600;
+            color: #e63946;
+        }
+
+        .time-ship {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .btn-order {
+            background-color: #e63946;
+            color: white;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-order:hover {
+            background-color: #c92d3a;
+            color: #fff;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #ff6b6b, #e63946);
+            color: #fff !important;
+            font-weight: 500;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #e63946, #b91c1c);
+            box-shadow: 0 6px 14px rgba(230, 57, 70, 0.45);
+            transform: translateY(-2px);
+        }
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: linear-gradient(90deg, #ff4d4f, #ff7875);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffe8e8 !important;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark py-3">
+    <div class="container">
+        <a class="navbar-brand" href="#">🍔 FoodNow</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <form th:action="@{/search}" method="get" class="d-flex mx-lg-auto my-2 my-lg-0" role="search" style="max-width: 400px; width: 100%;">
+                <input
+                        type="text"
+                        name="keyword"
+                        class="form-control me-2 rounded-pill px-3"
+                        placeholder="🔍 Tìm món, nhà hàng..."
+                        aria-label="Search"
+                        required>
+                <button class="btn btn-outline-light rounded-pill px-3" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-2">
+                    <a class="nav-link" th:href="@{/home}">Trang chủ</a>
+                </li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <h3 class="mb-4 text-center text-danger fw-bold">🍽️ Danh sách món ăn</h3>
+    <hr>
+
+    <div class="row">
+        <!-- Lặp qua danh sách món ăn -->
+        <div class="col-md-3 mb-4" th:each="food : ${foods}">
+            <div class="card food-card shadow-sm h-100">
+
+                <!-- Ảnh món ăn (click vào để xem chi tiết) -->
+                <a th:href="@{'/food/' + ${food.id}}">
+                    <img th:src="@{${food.image}}" alt="Food image" class="card-img-top">
+                </a>
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mb-1" th:text="${food.title}">Tên món ăn</h5>
+                    <p class="price mb-1" th:text="${#numbers.formatDecimal(food.price, 0, 0, 'COMMA')} + 'đ'">50,000đ</p>
+                    <p class="time-ship mb-3" th:text="'⏱ ' + ${food.timeShip}">20 phút</p>
+
+                    <div class="mt-auto d-grid gap-2">
+                        <!-- Nút đặt hàng -->
+                        <a th:href="@{'/order/add/' + ${food.id}}" class="btn btn-order w-100">
+                            <i class="fa-solid fa-cart-plus"></i> Đặt hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
