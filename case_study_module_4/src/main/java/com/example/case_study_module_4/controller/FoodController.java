@@ -14,11 +14,16 @@ public class FoodController {
 
 
     @GetMapping("/foods")
-    public String showFoodList(Model model) {
+    public String showFoodTop(Model model) {
         model.addAttribute("foods", foodService.findTopFoods());
         return "home/home";
     }
 
+    @GetMapping("/food")
+    public String showFoodList(Model model) {
+        model.addAttribute("foods", foodService.findAll());
+        return "food/list";
+    }
 
     @GetMapping("/food/{id}")
     public String showFoodDetail(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
