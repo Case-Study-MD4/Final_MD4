@@ -2,8 +2,10 @@ package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.entity.MenuRestaurant;
 import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.repository.IFoodRepository;
+import com.example.case_study_module_4.repository.IMenuRestaurantRepository;
 import com.example.case_study_module_4.repository.IRestaurantRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,12 @@ public class MenuController {
 
     private final IFoodRepository foodRepository;
     private final IRestaurantRepository restaurantRepository;
+    private final IMenuRestaurantRepository menuRestaurantRepository;
 
     @GetMapping
     public String showMenu(Model model) {
-        List<Food> foods = foodRepository.findAll();
-        model.addAttribute("foods", foods);
+        List<MenuRestaurant> menuList = menuRestaurantRepository.findAll();
+        model.addAttribute("menuList", menuList);
         return "food/menu";
     }
 
@@ -74,12 +77,22 @@ public class MenuController {
             return "food/add_food";
         }
 
+        // 1️⃣ Lưu food trước để có id
+        Food savedFood = foodRepository.save(food);
+
+        // 2️⃣ Lấy restaurant
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Nhà hàng không tồn tại"));
-        food.setRestaurant(restaurant); // ✅ gán nhà hàng cho món
 
-        foodRepository.save(food);
+        // 3️⃣ Tạo MenuRestaurant gắn food và restaurant
+        MenuRestaurant menuRestaurant = new MenuRestaurant();
+        menuRestaurant.setFood(savedFood);
+        menuRestaurant.setRestaurant(restaurant);
+
+        menuRestaurantRepository.save(menuRestaurant);
+
         redirect.addFlashAttribute("message", "Thêm món mới thành công!");
         return "redirect:/menu";
     }
+
 }

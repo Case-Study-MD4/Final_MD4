@@ -129,19 +129,16 @@
 
 
 <div class="menu">
-    <div class="card" th:each="food : ${foods}">
-        <img th:src="${food.imageUrl}" alt="Ảnh món ăn">
-        <h3 th:text="${food.title}"></h3>
-        <div class="price" th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
+    <div class="card" th:each="menu : ${menuList}">
+        <img th:src="${menu.food.image}" alt="Ảnh món ăn">
+        <h3 th:text="${menu.food.title}"></h3>
+        <div class="price" th:text="${#numbers.formatDecimal(menu.food.price, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
         <form th:action="@{/cart/add}" method="post">
-            <input type="hidden" name="foodId" th:value="${food.id}" />
-            <input type="number" name="quantity" min="1" value="1" />
+            <input type="hidden" name="foodId" th:value="${menu.food.id}"/>
+            <input type="number" name="quantity" min="1" value="1"/>
             <button type="submit">Thêm vào giỏ</button>
         </form>
     </div>
-        </div>
-
-
 </div>
 
 </body>

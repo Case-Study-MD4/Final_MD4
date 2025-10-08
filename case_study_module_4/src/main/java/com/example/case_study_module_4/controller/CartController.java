@@ -2,9 +2,12 @@ package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.dto.CreateOrderDto;
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.entity.MenuRestaurant;
 import com.example.case_study_module_4.entity.Order;
 import com.example.case_study_module_4.entity.User;
 import com.example.case_study_module_4.repository.IFoodRepository;
+import com.example.case_study_module_4.repository.IMenuRestaurantRepository;
+import com.example.case_study_module_4.repository.IRestaurantRepository;
 import com.example.case_study_module_4.repository.IUserRepository;
 import com.example.case_study_module_4.service.ICartService;
 import com.example.case_study_module_4.service.IOrderService;
@@ -29,19 +32,36 @@ public class CartController {
     private final IFoodRepository foodRepository;
     private final IUserRepository userRepository;
     private final ICartService cartService;
+    private final IRestaurantRepository restaurantRepository;
+    private final IMenuRestaurantRepository menuRestaurantRepository;
 
     @PostMapping("/add")
     public String addToCart(@RequestParam("foodId") Long foodId,
                             @RequestParam("quantity") int quantity,
                             RedirectAttributes redirect) {
+
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn"));
 
-        if (!cartService.getCart().isEmpty()) {
-            Long existingRestaurantId = foodRepository.findById(cartService.getCart().get(0).getFoodId())
-                    .map(f -> f.getRestaurant().getId()).orElse(null);
+        // Lấy danh sách menu liên quan đến món ăn
+        List<MenuRestaurant> menuList = menuRestaurantRepository.findAllByFoodId(foodId);
+        if (menuList.isEmpty()) {
+            redirect.addFlashAttribute("error", "Món này chưa được gán cho nhà hàng nào!");
+            return "redirect:/menu";
+        }
 
-            if (!existingRestaurantId.equals(food.getRestaurant().getId())) {
+        // Lấy nhà hàng đầu tiên (hoặc bạn có thể yêu cầu chọn)
+        Long restaurantId = menuList.get(0).getRestaurant().getId();
+
+        // Kiểm tra giỏ hàng
+        if (!cartService.getCart().isEmpty()) {
+            Long existingRestaurantId = cartService.getCart().stream()
+                    .findFirst()
+                    .map(item -> menuRestaurantRepository.findAllByFoodId(item.getFoodId())
+                            .get(0).getRestaurant().getId())
+                    .orElse(null);
+
+            if (!existingRestaurantId.equals(restaurantId)) {
                 redirect.addFlashAttribute("error", "Bạn chỉ có thể đặt món từ 1 nhà hàng trong cùng đơn hàng!");
                 return "redirect:/cart";
             }
@@ -52,22 +72,20 @@ public class CartController {
         return "redirect:/cart";
     }
 
-
     @GetMapping
     public String viewCart(Model model) {
         var cartItems = cartService.getCart();
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("total", cartService.getTotal());
 
-        // ✅ Lấy restaurantId từ món đầu tiên trong giỏ
         Long restaurantId = null;
         if (!cartItems.isEmpty()) {
             Long firstFoodId = cartItems.get(0).getFoodId();
-            restaurantId = foodRepository.findById(firstFoodId)
-                    .map(f -> f.getRestaurant().getId())
-                    .orElse(null);
+            List<MenuRestaurant> menuList = menuRestaurantRepository.findAllByFoodId(firstFoodId);
+            if (!menuList.isEmpty()) {
+                restaurantId = menuList.get(0).getRestaurant().getId();
+            }
         }
-
         model.addAttribute("restaurantId", restaurantId);
         return "cart/view";
     }

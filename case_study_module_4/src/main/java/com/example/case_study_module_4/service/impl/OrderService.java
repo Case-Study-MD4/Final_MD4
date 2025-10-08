@@ -62,12 +62,16 @@ public class OrderService implements IOrderService {
             orderItem.setFood(food);
             orderItem.setQuantity(itemDto.getQuantity());
 
-//            BigDecimal price = food.getPrice().multiply(BigDecimal.valueOf(itemDto.getQuantity()));
-//            orderItem.setPrice(price);
-//
-//            total = total.add(price);
+            // Lưu subtotal từng món (giá x số lượng)
+            BigDecimal subtotal = BigDecimal.valueOf(food.getPrice())
+                    .multiply(BigDecimal.valueOf(itemDto.getQuantity()));
+            orderItem.setPrice(subtotal);
+
+            total = total.add(subtotal);
+
             orderItems.add(orderItem);
         }
+
 
         order.setItems(orderItems);
         order.setTotalPrice(total);
