@@ -119,7 +119,7 @@
           <a class="nav-link" th:href="@{/home}">Trang chủ</a>
         </li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="#">Giỏ hàng</a></li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
         <li class="nav-item mx-2">
           <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
@@ -169,10 +169,14 @@
         </a>
         <div class="card-body">
           <h5 th:text="${f.title}">Tên món</h5>
-          <p class="food-price mb-2"
-             th:text="${#numbers.formatDecimal(f.price, 0, 0, 'COMMA')} + ' đ'">60.000 đ</p>
+          <p>
+            Giá:
+            <span class="text-danger fw-bold"
+                  th:text="${#numbers.formatDecimal(f.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    </span>
+          </p>
           <a th:href="@{'/foods/' + ${f.id}}" class="btn btn-outline-danger w-100 rounded-pill">
-            <i class="fa-solid fa-eye me-1"></i> Đặt món
+            <i class="fa-solid fa-eye me-1"></i> Thêm vào giỏ hàng
           </a>
         </div>
       </div>

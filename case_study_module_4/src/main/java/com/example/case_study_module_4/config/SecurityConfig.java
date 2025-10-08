@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**","/js/**","/images/**","/webjars/**").permitAll()
 
                         // ✅ trang public
-                        .requestMatchers("/login", "/logoutSuccessful", "/403").permitAll()
+                        .requestMatchers("/login", "/logoutSuccessful", "/403","/home").permitAll()
 
                         // ✅ phân quyền cụ thể
                         .requestMatchers("/orders/create").hasRole("ADMIN")

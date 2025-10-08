@@ -183,7 +183,7 @@
           <a class="nav-link" th:href="@{/home}">Trang chủ</a>
         </li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="#">Giỏ hàng</a></li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
         <li class="nav-item mx-2">
           <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
@@ -271,9 +271,15 @@
         <h5>
           <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
         </h5>
-        <p th:text="${#numbers.formatDecimal(food.price, 0, 0, 'COMMA')} + 'đ'">Giá món ăn</p>
+        <p>
+          Giá:
+          <span class="text-danger fw-bold"
+                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+          </span>
+        </p>
+
         <button class="btn btn-outline-danger w-100">
-          <i class="fa-solid fa-cart-plus me-2"></i>Đặt món
+          <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
         </button>
       </div>
     </div>
