@@ -2,9 +2,12 @@ package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.repository.IFoodRepository;
+import com.example.case_study_module_4.repository.IRestaurantRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,7 @@ import java.util.List;
 public class MenuController {
 
     private final IFoodRepository foodRepository;
+    private final IRestaurantRepository restaurantRepository;
 
     @GetMapping
     public String showMenu(Model model) {
@@ -53,19 +57,29 @@ public class MenuController {
         return "redirect:/cart";
     }
 
+    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
     @GetMapping("/add_food")
-    public String addFood(Model model) {
-        model.addAttribute("foods", new Food());
+    public String addFoodForm(Model model) {
+        model.addAttribute("food", new Food());
+        model.addAttribute("restaurants", restaurantRepository.findAll());
         return "food/add_food";
     }
-
+    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
     @PostMapping("/add_food")
-    public String addFood(@ModelAttribute("food") Food food, BindingResult bindingResult, RedirectAttributes redirect) {
+    public String addFood(@ModelAttribute("food") Food food,
+                          @RequestParam Long restaurantId,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirect) {
         if (bindingResult.hasErrors()) {
             return "food/add_food";
         }
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("Nhà hàng không tồn tại"));
+        food.setRestaurant(restaurant); // ✅ gán nhà hàng cho món
+
         foodRepository.save(food);
-        redirect.addFlashAttribute("message", "Thêm mới thành công");
+        redirect.addFlashAttribute("message", "Thêm món mới thành công!");
         return "redirect:/menu";
     }
 }

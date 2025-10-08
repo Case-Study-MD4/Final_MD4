@@ -27,13 +27,13 @@ public class OrderController {
         model.addAttribute("orders", orders);
         return "orders/history";
     }
-
-    @GetMapping("/success/{orderId}")
-    public String showSuccess(@PathVariable Long orderId, Model model) {
-        Order order = orderService.getOrderById(orderId);
+    @GetMapping("/success/{id}")
+    public String orderSuccess(@PathVariable Long id, Model model) {
+        Order order = orderService.getOrderById(id);
         model.addAttribute("order", order);
         return "orders/success";
     }
+
 
 }
 

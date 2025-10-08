@@ -7,36 +7,38 @@
         body {
             font-family: Inter, sans-serif;
             background: #f9fafb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 60px;
         }
-        h2 { color: #27ae60; margin-bottom: 10px; }
-        p { color: #555; margin-bottom: 20px; }
-        .btn {
-            background: #e62222;
-            color: #fff;
-            text-decoration: none;
+        h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 25px;
+            background: #e74c3c;
+            color: white;
             padding: 10px 20px;
             border-radius: 6px;
+            text-decoration: none;
         }
-        .btn:hover { background: #c0392b; }
+        a:hover {
+            background: #c0392b;
+        }
     </style>
 </head>
 <body>
-<div class="card">
-    <h2>✅ Đặt hàng thành công!</h2>
-    <p>Cảm ơn bạn đã đặt hàng tại <b>[[${order.restaurant.name}]]</b>.</p>
-    <p>Mã đơn hàng: <b th:text="${order.id}"></b></p>
-    <a class="btn" th:href="@{/orders/history}">Xem lịch sử đơn hàng</a>
-</div>
+
+<h2>🎉 Đặt hàng thành công!</h2>
+<p>Cảm ơn bạn đã đặt hàng tại OsaHaNeat.</p>
+<p>Mã đơn hàng của bạn là: <strong th:text="${order.id}"></strong></p>
+
+<a th:href="@{/menu}">⬅ Quay lại thực đơn</a>
+
 </body>
 </html>
