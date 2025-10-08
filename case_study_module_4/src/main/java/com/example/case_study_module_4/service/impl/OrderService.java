@@ -62,10 +62,10 @@ public class OrderService implements IOrderService {
             orderItem.setFood(food);
             orderItem.setQuantity(itemDto.getQuantity());
 
-            BigDecimal price = food.getPrice().multiply(BigDecimal.valueOf(itemDto.getQuantity()));
-            orderItem.setPrice(price);
-
-            total = total.add(price);
+//            BigDecimal price = food.getPrice().multiply(BigDecimal.valueOf(itemDto.getQuantity()));
+//            orderItem.setPrice(price);
+//
+//            total = total.add(price);
             orderItems.add(orderItem);
         }
 

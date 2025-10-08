@@ -16,13 +16,14 @@ public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-    private BigDecimal price;
-    private String imageUrl;
+    private String image;
+    private String timeShip;
+    private Double price;
+
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
+    @JoinColumn(name = "cate_id", referencedColumnName = "id")
+    private Categories categories;
 
 }
 
