@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +65,9 @@ public class OrderService implements IOrderService {
 
             // Lưu subtotal từng món (giá x số lượng)
             BigDecimal subtotal = BigDecimal.valueOf(food.getPrice())
-                    .multiply(BigDecimal.valueOf(itemDto.getQuantity()));
-            orderItem.setPrice(subtotal);
+                    .multiply(BigDecimal.valueOf(itemDto.getQuantity()))
+                    .setScale(0, RoundingMode.HALF_UP); // làm tròn về 0 chữ số thập phân
+
 
             total = total.add(subtotal);
 
