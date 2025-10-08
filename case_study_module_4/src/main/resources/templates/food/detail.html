@@ -88,15 +88,71 @@
         .btn-back-home i {
             font-size: 16px;
         }
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: linear-gradient(90deg, #ff4d4f, #ff7875);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffe8e8 !important;
+        }
 
     </style>
 </head>
 
 <body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark py-3">
+    <div class="container">
+        <a class="navbar-brand" href="#">🍔 FoodNow</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <form th:action="@{/search}" method="get" class="d-flex mx-lg-auto my-2 my-lg-0" role="search" style="max-width: 400px; width: 100%;">
+                <input
+                        type="text"
+                        name="keyword"
+                        class="form-control me-2 rounded-pill px-3"
+                        placeholder="🔍 Tìm món, nhà hàng..."
+                        aria-label="Search"
+                        required>
+                <button class="btn btn-outline-light rounded-pill px-3" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-2">
+                    <a class="nav-link" th:href="@{/home}">Trang chủ</a>
+                </li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container py-5">
-    <a th:href="@{/home}" class="btn-back-home">
-        <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
-    </a>
 
     <div class="food-detail-container">
         <div class="row g-4">
