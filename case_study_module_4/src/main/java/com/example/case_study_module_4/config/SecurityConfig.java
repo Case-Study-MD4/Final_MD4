@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .failureUrl("/login?error=true")
                         // ✅ luôn chuyển về trang lịch sử sau login, tránh lặp
-                        .defaultSuccessUrl("/orders/history", true)
+                        .defaultSuccessUrl("/menu", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

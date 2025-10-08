@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class MenuController {
     public String showMenu(Model model) {
         List<Food> foods = foodRepository.findAll();
         model.addAttribute("foods", foods);
-        return "menu";
+        return "food/menu";
     }
 
     // ✅ Thêm món vào giỏ hàng
@@ -49,5 +51,21 @@ public class MenuController {
 
         session.setAttribute("cart", cart);
         return "redirect:/cart";
+    }
+
+    @GetMapping("/add_food")
+    public String addFood(Model model) {
+        model.addAttribute("foods", new Food());
+        return "food/add_food";
+    }
+
+    @PostMapping("/add_food")
+    public String addFood(@ModelAttribute("food") Food food, BindingResult bindingResult, RedirectAttributes redirect) {
+        if (bindingResult.hasErrors()) {
+            return "food/add_food";
+        }
+        foodRepository.save(food);
+        redirect.addFlashAttribute("message", "Thêm mới thành công");
+        return "redirect:/menu";
     }
 }
