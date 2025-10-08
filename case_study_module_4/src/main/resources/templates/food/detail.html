@@ -142,7 +142,7 @@
                     <a class="nav-link" th:href="@{/home}">Trang chủ</a>
                 </li>
                 <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
-                <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#">Giỏ hàng</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
@@ -170,10 +170,13 @@
                     <span th:text="${food.timeShip}">20 phút</span> giao hàng
                 </p>
 
-                <p class="food-price mb-3"
-                   th:text="${#numbers.formatDecimal(food.price, 0, 0, 'POINT')} + ' đ'">
-                    60.000 đ
+                <p>
+                    Giá:
+                    <span class="text-danger fw-bold"
+                          th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    </span>
                 </p>
+
 
                 <p class="food-category mb-3">
                     Danh mục:
@@ -181,7 +184,7 @@
                 </p>
 
                 <button class="btn btn-order w-100 py-2 mt-auto">
-                    <i class="fa-solid fa-cart-plus me-2"></i> Đặt món ngay
+                    <i class="fa-solid fa-cart-plus me-2"></i> Thêm vào giỏ hàng
                 </button>
             </div>
         </div>
