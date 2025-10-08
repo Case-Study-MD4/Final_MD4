@@ -1,6 +1,7 @@
 package com.example.case_study_module_4.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.metamodel.IdentifiableType;
 import lombok.*;
 
 import java.math.BigDecimal;

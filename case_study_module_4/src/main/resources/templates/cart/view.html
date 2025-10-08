@@ -4,57 +4,115 @@
     <meta charset="UTF-8">
     <title>Giỏ hàng của bạn</title>
     <style>
-        body { font-family: Inter, sans-serif; background: #f9fafb; color: #333; padding: 40px; }
-        h2 { color: #e67e22; text-align: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px; }
-        th, td { padding: 12px 16px; border-bottom: 1px solid #eee; }
-        th { background: #f39c12; color: white; }
-        tr:hover { background: #fdf2e9; }
-        .total { text-align: right; margin-top: 15px; font-weight: bold; }
-        .actions { text-align: right; margin-top: 20px; }
-        .btn {
-            background: #e67e22; color: white; border: none; padding: 10px 20px;
-            border-radius: 6px; cursor: pointer; text-decoration: none;
-        }
-        .btn:hover { background: #d35400; }
-        a.remove { color: #c0392b; text-decoration: none; }
+        body { font-family: "Inter", sans-serif; background: #f9fafb; color: #333; padding: 40px; }
+        h2 { color: #e62222; text-align: center; margin-bottom: 25px; font-size: 28px; }
+
+        .alert { color: #842029; background: #f8d7da; border: 1px solid #f5c2c7; padding: 10px 16px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 14px 18px; text-align: center; }
+        th { background: #e62222; color: white; text-transform: uppercase; font-weight: 600; font-size: 14px; }
+        tr:not(:last-child) { border-bottom: 1px solid #f0f0f0; }
+
+        .qty-control { display: inline-flex; align-items: center; gap: 6px; }
+        .qty-btn { background: #e62222; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; }
+        .qty-btn:hover { background: #c91616; }
+        .qty-input { width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 6px; height: 26px; }
+
+        .remove { color: #c0392b; text-decoration: none; font-weight: bold; font-size: 18px; }
+        .remove:hover { color: #e74c3c; }
+
+        .total { text-align: right; margin-top: 20px; font-weight: bold; font-size: 18px; }
+        .btn { background: #e62222; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 16px; transition: background 0.3s ease; }
+        .btn:hover { background: #c91616; }
+
+        .empty { text-align: center; color: #888; margin-top: 20px; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <h2>🛒 Giỏ hàng của bạn</h2>
 
-<table>
-    <thead>
-    <tr>
-        <th>Tên món</th>
-        <th>Giá</th>
-        <th>Số lượng</th>
-        <th>Thành tiền</th>
-        <th>Xoá</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${cartItems}">
-        <td th:text="${item.foodName}"></td>
-        <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-        <td th:text="${item.quantity}"></td>
-        <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-        <td><a class="remove" th:href="@{'/cart/remove/' + ${item.foodId}}">X</a></td>
-    </tr>
-    </tbody>
-</table>
+<div th:if="${error}" class="alert" th:text="${error}"></div>
 
-<div class="total">
-    Tổng cộng: <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+<div th:if="${#lists.isEmpty(cartItems)}" class="empty">
+    Giỏ hàng trống. Hãy thêm món để thưởng thức nhé!
 </div>
 
-<div class="actions">
-    <form th:action="@{/cart/checkout}" method="post">
-        <input type="hidden" name="restaurantId" value="1"/>
-        <button type="submit" class="btn">Đặt hàng</button>
-    </form>
-</div>
+<form th:action="@{/cart/checkout}" method="post" th:if="${!#lists.isEmpty(cartItems)}">
+    <input type="hidden" name="restaurantId" th:value="${restaurantId}">
+
+    <table>
+        <thead>
+        <tr>
+            <th>Tên món</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+            <th>Xoá</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cartItems}">
+            <td th:text="${item.foodName}"></td>
+            <td class="price" th:data-price="${item.price}" th:text="${#numbers.formatDecimal(item.price,0,'COMMA',0,'POINT')} + 'đ'"></td>
+
+            <td>
+                <div class="qty-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this, -1)">−</button>
+                    <input type="text" class="qty-input" th:value="${item.quantity}" readonly>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this, 1)">+</button>
+
+                    <!-- Hidden inputs gửi về backend -->
+                    <input type="hidden" name="foodIds" th:value="${item.foodId}" class="foodId">
+                    <input type="hidden" name="quantities" th:value="${item.quantity}" class="quantity">
+                </div>
+            </td>
+
+            <td class="subtotal" th:text="${#numbers.formatDecimal(item.price * item.quantity,0,'COMMA',0,'POINT')} + 'đ'"></td>
+            <td><a th:href="@{'/cart/remove/' + ${item.foodId}}" class="remove">×</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="total">
+        Tổng cộng: <span id="totalPrice" th:text="${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} + 'đ'"></span>
+    </div>
+
+    <div class="actions" style="text-align:right; margin-top:15px;">
+        <button type="submit" class="btn">Đặt hàng ngay</button>
+    </div>
+</form>
+
+<script>
+    function updateQuantity(button, change) {
+        const row = button.closest("tr");
+        const input = row.querySelector(".qty-input");
+        const hiddenInput = row.querySelector(".quantity");
+        const price = parseInt(row.querySelector(".price").dataset.price);
+        const subtotalCell = row.querySelector(".subtotal");
+
+        let quantity = parseInt(input.value) + change;
+        if (quantity < 1) quantity = 1;
+
+        input.value = quantity;
+        hiddenInput.value = quantity; // gửi về backend
+
+        const subtotal = price * quantity;
+        subtotalCell.textContent = subtotal.toLocaleString("vi-VN") + "đ";
+
+        updateTotal();
+    }
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll(".subtotal").forEach(td => {
+            const value = parseInt(td.textContent.replace(/\D/g,''));
+            total += value;
+        });
+        document.getElementById("totalPrice").textContent = total.toLocaleString("vi-VN") + "đ";
+    }
+</script>
 
 </body>
 </html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm món ăn mới</title>
+    <style>
+        body {
+            font-family: Inter, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #27ae60;
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button, a {
+            background: #27ae60;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover, a:hover {
+            background: #219150;
+        }
+
+        a.cancel {
+            background: #e74c3c;
+        }
+
+        a.cancel:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🥗 Thêm món ăn mới</h2>
+
+<div class="form-container">
+    <form th:action="@{/menu/add_food}" th:object="${food}" method="post">
+
+        <label for="title">Tên món ăn</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="Nhập tên món..." required>
+
+        <label for="price">Giá (VNĐ)</label>
+        <input type="number" id="price" th:field="*{price}" placeholder="Nhập giá..." min="0" required>
+
+        <label for="imageUrl">Hình ảnh (URL)</label>
+        <input type="text" id="imageUrl" th:field="*{imageUrl}" placeholder="Nhập link hình ảnh...">
+
+        <!-- Thêm chọn nhà hàng -->
+        <label for="restaurant">Nhà hàng</label>
+        <select id="restaurant" name="restaurantId" required>
+            <option value="">-- Chọn nhà hàng --</option>
+            <option th:each="r : ${restaurants}" th:value="${r.id}" th:text="${r.title}">Nhà hàng</option>
+        </select>
+
+
+        <div class="actions">
+            <a th:href="@{/menu}" class="cancel">Hủy</a>
+            <button type="submit">Lưu món</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

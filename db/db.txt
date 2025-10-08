@@ -1,3 +1,7 @@
+-- =========================================
+-- osahaneat database (mysql 8.0+)
+-- fixed schema + seed (cate_id null + on delete set null)
+-- =========================================
 
 drop database if exists osahaneat;
 create database osahaneat character set utf8mb4 collate utf8mb4_unicode_ci;
@@ -49,8 +53,9 @@ create table users (
 -- =========================
 create table categories (
   id int auto_increment primary key,
-  name_cate varchar(100),
-  create_date timestamp default current_timestamp
+  name_cate varchar(100) not null,
+  create_date timestamp default current_timestamp,
+  constraint uq_categories_name unique (name_cate)
 );
 
 -- =========================
@@ -65,7 +70,8 @@ create table restaurants (
   is_freeship boolean default false,
   address varchar(255),
   open_date timestamp default current_timestamp,
-  owner_account_id int null unique,
+  owner_account_id int null,
+  index idx_rest_owner (owner_account_id),
   foreign key (owner_account_id) references accounts(id)
     on delete set null
     on update cascade
@@ -76,11 +82,12 @@ create table restaurants (
 -- =========================
 create table foods (
   id int auto_increment primary key,
-  title varchar(255),
+  title varchar(255) not null,
   image text,
   time_ship varchar(20),
-  price decimal(10,2),
-  cate_id int,
+  price double not null,
+  cate_id int null,
+  description varchar(250),
   foreign key (cate_id) references categories(id)
     on delete set null
     on update cascade
@@ -107,16 +114,17 @@ create table menu_restaurant (
 -- =========================
 create table orders (
   id int auto_increment primary key,
-  user_id int,
-  res_id int,
+  user_id int not null,
+  res_id int not null,
   create_date timestamp default current_timestamp,
   total_price decimal(12,2) not null default 0.00,
-  status int default 0,
+  status int not null default 0,
+  constraint ck_orders_status check (status in (0,1,2)),
   foreign key (user_id) references users(id)
     on delete cascade
     on update cascade,
   foreign key (res_id) references restaurants(id)
-    on delete set null
+    on delete cascade
     on update cascade
 );
 
@@ -129,6 +137,8 @@ create table order_items (
   quantity int not null default 1,
   price decimal(12,2) not null default 0.00,
   primary key (order_id, food_id),
+  constraint ck_order_items_qty check (quantity > 0),
+  constraint ck_order_items_price check (price >= 0),
   foreign key (order_id) references orders(id)
     on delete cascade
     on update cascade,
@@ -142,11 +152,12 @@ create table order_items (
 -- =========================
 create table rating_food (
   id int auto_increment primary key,
-  user_id int,
-  food_id int,
+  user_id int not null,
+  food_id int not null,
   content text,
-  rate_point int,
+  rate_point int not null,
   rating_food_date datetime default current_timestamp,
+  constraint ck_rating_food_point check (rate_point between 1 and 5),
   foreign key (user_id) references users(id)
     on delete cascade
     on update cascade,
@@ -160,11 +171,12 @@ create table rating_food (
 -- =========================
 create table rating_restaurant (
   id int auto_increment primary key,
-  user_id int,
-  res_id int,
+  user_id int not null,
+  res_id int not null,
   content text,
-  rate_point int,
+  rate_point int not null,
   rating_restaurant_date datetime default current_timestamp,
+  constraint ck_rating_res_point check (rate_point between 1 and 5),
   foreign key (user_id) references users(id)
     on delete cascade
     on update cascade,
@@ -273,3 +285,136 @@ end//
 
 delimiter ;
 
+use osahaneat;
+
+-- Xóa dữ liệu cũ (nếu có)
+set foreign_key_checks = 0;
+truncate roles;
+truncate accounts;
+truncate users;
+truncate categories;
+truncate restaurants;
+truncate foods;
+truncate menu_restaurant;
+truncate orders;
+truncate order_items;
+truncate rating_food;
+truncate rating_restaurant;
+truncate images;
+set foreign_key_checks = 1;
+
+-- =========================
+-- 1) roles
+-- =========================
+insert into roles (role_name) values
+('ADMIN'),
+('RESTAURANT_OWNER'),
+('CUSTOMER'),
+('SHIPPER');
+
+-- =========================
+-- 2) accounts
+-- =========================
+insert into accounts (user_name, password, role_id)
+values
+('admin', '123456', 1),
+('owner1', '123456', 2),
+('customer1', '123456', 3),
+('shipper1', '123456', 4);
+
+-- =========================
+-- 3) users
+-- =========================
+insert into users (account_id, fullname, avatar, phone, address)
+values
+(1, 'Admin Master', 'https://i.imgur.com/8Km9tLL.jpg', '0909000001', 'Hà Nội'),
+(2, 'Quán Ăn Hương Đồng', 'https://i.imgur.com/zYIlgBl.jpg', '0909000002', 'TP.HCM'),
+(3, 'Nguyễn Văn A', 'https://i.imgur.com/HvT8p9y.jpg', '0909000003', 'Đà Nẵng'),
+(4, 'Trần Shipper', 'https://i.imgur.com/FVbI5aX.jpg', '0909000004', 'Huế');
+
+-- =========================
+-- 4) categories
+-- =========================
+insert into categories (name_cate) values
+('Món chính'),
+('Đồ uống'),
+('Tráng miệng'),
+('Ăn vặt');
+
+-- =========================
+-- 5) restaurants
+-- =========================
+insert into restaurants (title, subtitle, description, image, is_freeship, address, owner_account_id)
+values
+('Hương Đồng Quán', 'Đậm đà hương vị quê', 'Chuyên phục vụ món Việt dân dã', 'https://i.imgur.com/TvU6XvE.jpg', true, 'Quận 3, TP.HCM', 2),
+('Cơm Tấm Sài Gòn', 'Chuẩn vị cơm tấm truyền thống', 'Ngon – sạch – no nê', 'https://i.imgur.com/MrFzZ0P.jpg', false, 'Quận 5, TP.HCM', 2);
+
+-- =========================
+-- 6) foods
+-- =========================
+insert into foods (title, image, time_ship, price, cate_id, description)
+values
+('Cơm gà xối mỡ', 'https://i.imgur.com/Apf1sXb.jpg', '20 phút', 45000, 1, 'Cơm vàng giòn, gà chiên thơm'),
+('Bún bò Huế', 'https://i.imgur.com/YcU0vR1.jpg', '25 phút', 40000, 1, 'Đậm vị miền Trung'),
+('Trà tắc', 'https://i.imgur.com/tVd7u7Q.jpg', '10 phút', 15000, 2, 'Giải khát mát lạnh'),
+('Chè khúc bạch', 'https://i.imgur.com/DY9a9uY.jpg', '15 phút', 30000, 3, 'Thanh mát tráng miệng');
+
+-- =========================
+-- 7) menu_restaurant
+-- =========================
+insert into menu_restaurant (res_id, food_id)
+values
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 4);
+
+-- =========================
+-- 8) orders
+-- =========================
+insert into orders (user_id, res_id, total_price, status)
+values
+(3, 1, 85000, 0),
+(3, 2, 30000, 1);
+
+-- =========================
+-- 9) order_items
+-- =========================
+insert into order_items (order_id, food_id, quantity, price)
+values
+(1, 1, 1, 45000),
+(1, 3, 1, 15000),
+(1, 2, 1, 25000),
+(2, 4, 1, 30000);
+
+-- =========================
+-- 10) rating_food
+-- =========================
+insert into rating_food (user_id, food_id, content, rate_point)
+values
+(3, 1, 'Gà giòn ngon cực kỳ!', 5),
+(3, 2, 'Vị hơi cay nhưng chuẩn Huế.', 4);
+
+-- =========================
+-- 11) rating_restaurant
+-- =========================
+insert into rating_restaurant (user_id, res_id, content, rate_point)
+values
+(3, 1, 'Quán sạch sẽ, nhân viên thân thiện.', 5),
+(3, 2, 'Giá hợp lý, cơm ngon.', 4);
+
+-- =========================
+-- 12) images
+-- =========================
+insert into images (res_id, image)
+values
+(1, 'https://i.imgur.com/TvU6XvE.jpg'),
+(1, 'https://i.imgur.com/eqvZ9Vf.jpg'),
+(2, 'https://i.imgur.com/MrFzZ0P.jpg');
+
+insert into images (food_id, image)
+values
+(1, 'https://i.imgur.com/Apf1sXb.jpg'),
+(2, 'https://i.imgur.com/YcU0vR1.jpg'),
+(4, 'https://i.imgur.com/DY9a9uY.jpg');
