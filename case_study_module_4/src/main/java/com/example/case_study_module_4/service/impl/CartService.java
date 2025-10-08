@@ -36,7 +36,9 @@ public class CartService implements ICartService {
                 return;
             }
         }
-        cart.add(new CartItemDto(food.getId(), food.getTitle(), food.getPrice(), quantity));
+        BigDecimal itemPrice = BigDecimal.valueOf(food.getPrice());
+
+        cart.add(new CartItemDto(food.getId(), food.getTitle(), itemPrice, quantity));
         session.setAttribute("cart", cart);
     }
 
