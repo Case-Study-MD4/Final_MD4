@@ -47,6 +47,7 @@ public class CartController {
             }
         }
 
+
         cartService.addToCart(food, quantity);
         return "redirect:/cart";
     }
