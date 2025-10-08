@@ -3,6 +3,7 @@ package com.example.case_study_module_4.controller;
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.MenuRestaurant;
+import com.example.case_study_module_4.entity.MenuRestaurantId;
 import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.repository.IFoodRepository;
 import com.example.case_study_module_4.repository.IMenuRestaurantRepository;
@@ -86,6 +87,11 @@ public class MenuController {
 
         // 3️⃣ Tạo MenuRestaurant gắn food và restaurant
         MenuRestaurant menuRestaurant = new MenuRestaurant();
+
+        // ✅ Khởi tạo EmbeddedId
+        MenuRestaurantId menuId = new MenuRestaurantId(savedFood.getId(), restaurant.getId());
+        menuRestaurant.setId(menuId);
+
         menuRestaurant.setFood(savedFood);
         menuRestaurant.setRestaurant(restaurant);
 
@@ -94,5 +100,6 @@ public class MenuController {
         redirect.addFlashAttribute("message", "Thêm món mới thành công!");
         return "redirect:/menu";
     }
+
 
 }

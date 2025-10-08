@@ -29,5 +29,12 @@ public class UserService implements IUserService {
         user.setPhone(dto.getPhone());
         user.setAddress(dto.getAddress());
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy user với username=" + username));
+    }
+
 }
 
