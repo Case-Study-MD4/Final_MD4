@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt hàng thành công</title>
+    <style>
+        body {
+            font-family: Inter, sans-serif;
+            background: #f9fafb;
+            text-align: center;
+            padding: 60px;
+        }
+        h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 25px;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        a:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🎉 Đặt hàng thành công!</h2>
+<p>Cảm ơn bạn đã đặt hàng tại OsaHaNeat.</p>
+<p>Mã đơn hàng của bạn là: <strong th:text="${order.id}"></strong></p>
+
+<a th:href="@{/menu}">⬅ Quay lại thực đơn</a>
+
+</body>
+</html>

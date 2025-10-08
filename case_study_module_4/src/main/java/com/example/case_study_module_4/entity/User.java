@@ -1,27 +1,37 @@
 package com.example.case_study_module_4.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.List;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "users")
-public class  User {
+@Getter @Setter
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Cột users.account_id (UNIQUE) đã có trong DB → đây là "owner" của quan hệ
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false, unique = true)
+    @ToString.Exclude
+    private Account account;
+
+    @Column(nullable = false, length = 100)
     private String fullname;
+
+    private String avatar;
     private String phone;
     private String address;
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    // tiện ích: đồng bộ 2 chiều (nếu bạn set từ User)
+    public void setAccount(Account account) {
+        this.account = account;
+        if (account != null && account.getUser() != this) {
+            account.setUser(this);
+        }
+    }
 }
-

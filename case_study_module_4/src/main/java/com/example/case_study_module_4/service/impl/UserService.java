@@ -25,7 +25,7 @@ public class UserService implements IUserService {
     @Override
     public void updateProfile(Long id, UserDto dto) {
         User user = getById(id);
-        user.setFullname(dto.getFullname());
+        user.setFullname(dto.getFullName());
         user.setPhone(dto.getPhone());
         user.setAddress(dto.getAddress());
     }

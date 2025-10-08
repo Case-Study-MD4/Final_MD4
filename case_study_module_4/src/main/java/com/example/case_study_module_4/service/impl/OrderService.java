@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,6 @@ public class OrderService implements IOrderService {
     private final IOrderRepository orderRepository;
     private final IFoodRepository foodRepository;
     private final IUserRepository userRepository;
-    private final IOrderItemRepository itemRepository;
     private final IRestaurantRepository restaurantRepository;
 
     @Override
@@ -45,6 +45,9 @@ public class OrderService implements IOrderService {
         order.setRestaurant(restaurant);
         order.setStatus(0); // 0 = chờ xác nhận
         order.setTotalPrice(BigDecimal.ZERO);
+
+        // 🕓 Thêm dòng này để lưu thời gian đặt hàng
+        order.setCreateDate(LocalDateTime.now());
 
         BigDecimal total = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -71,5 +74,13 @@ public class OrderService implements IOrderService {
 
         return orderRepository.save(order);
     }
+
+
+    @Override
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
+    }
+
 
 }

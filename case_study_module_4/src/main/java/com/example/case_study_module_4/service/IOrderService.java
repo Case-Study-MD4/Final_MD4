@@ -11,5 +11,7 @@ public interface IOrderService {
 
     @Transactional
     Order createOrder(CreateOrderDto dto);
+
+    Order getOrderById(Long orderId);
 }
 
