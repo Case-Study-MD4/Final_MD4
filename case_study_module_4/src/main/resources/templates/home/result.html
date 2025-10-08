@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Kết quả tìm kiếm</title>
+  <th:block th:replace="~{common/template::library}"></th:block>
+  <style>
+    /* Tổng thể */
+    body {
+      background-color: #fafafa;
+    }
+
+    h3, h4 {
+      font-weight: 700;
+      color: #333;
+    }
+
+    /* Card nhà hàng */
+    .restaurant-card,
+    .food-card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: #fff;
+      height: 100%;
+    }
+
+    .restaurant-card:hover,
+    .food-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .restaurant-card img,
+    .food-card img {
+      height: 180px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .restaurant-card h5,
+    .food-card h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .food-price {
+      font-weight: bold;
+      color: #d9534f;
+      font-size: 1.05rem;
+    }
+
+    .btn-back {
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background-color: #ff4d4d;
+      color: white !important;
+    }
+
+    .section-divider {
+      border-bottom: 2px solid #ddd;
+      margin: 30px 0 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-5">
+  <!-- Nút quay lại -->
+  <a th:href="@{/home}" class="btn btn-outline-danger btn-back mb-4">
+    <i class="fa-solid fa-arrow-left me-2"></i>Quay lại trang chủ
+  </a>
+
+  <!-- Tiêu đề -->
+  <h3 class="mb-3">
+    🔎 Kết quả tìm kiếm cho: "<span class="text-danger" th:text="${keyword}"></span>"
+  </h3>
+  <div class="section-divider"></div>
+
+  <!-- Kết quả nhà hàng -->
+  <h4 class="mb-3">🍽️ Nhà hàng phù hợp</h4>
+  <div class="row">
+    <div class="col-md-3 mb-4" th:each="r : ${restaurants}">
+      <div class="card restaurant-card shadow-sm">
+        <a th:href="@{'/restaurants/' + ${r.id}}">
+          <img th:src="@{${r.image}}" alt="restaurant image">
+        </a>
+        <div class="card-body text-center">
+          <h5 th:text="${r.title}">Tên nhà hàng</h5>
+          <p class="text-muted small mb-0" th:text="${r.address}">Địa chỉ</p>
+          <a th:href="@{'/restaurants/' + ${r.id}}" class="btn btn-danger w-100 mt-2">
+            Xem menu
+            </a>
+        </div>
+      </div>
+    </div>
+    <div th:if="${#lists.isEmpty(restaurants)}" class="text-muted text-center">
+      Không tìm thấy nhà hàng nào phù hợp.
+    </div>
+  </div>
+
+  <!-- Kết quả món ăn -->
+  <div class="section-divider"></div>
+  <h4 class="mb-3">🍛 Món ăn phù hợp</h4>
+  <div class="row">
+    <div class="col-md-3 mb-4" th:each="f : ${foods}">
+      <div class="card food-card shadow-sm text-center">
+        <a th:href="@{'/food/' + ${f.id}}">
+          <img th:src="@{${f.image}}" alt="food image">
+        </a>
+        <div class="card-body">
+          <h5 th:text="${f.title}">Tên món</h5>
+          <p class="food-price mb-2"
+             th:text="${#numbers.formatDecimal(f.price, 0, 0, 'COMMA')} + ' đ'">60.000 đ</p>
+          <a th:href="@{'/foods/' + ${f.id}}" class="btn btn-outline-danger w-100 rounded-pill">
+            <i class="fa-solid fa-eye me-1"></i> Đặt món
+          </a>
+        </div>
+      </div>
+    </div>
+    <div th:if="${#lists.isEmpty(foods)}" class="text-muted text-center">
+      Không tìm thấy món ăn nào phù hợp.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
