@@ -8,7 +8,6 @@
   <th:block th:replace="~{common/template::library}"></th:block>
 
   <style>
-    /* --- HOME PAGE SPECIFIC STYLE --- */
     body {
       background-color: #fdfdfd;
       font-family: 'Poppins', sans-serif;
@@ -25,12 +24,34 @@
       border: none;
       border-radius: 15px;
       overflow: hidden;
+      background: white;
       transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .restaurant-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .restaurant-card .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
     }
 
     .restaurant-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .freeship-placeholder {
+      min-height: 20px;
     }
 
     .product-card {
@@ -53,97 +74,13 @@
       width: 100%;
       object-fit: cover;
     }
-
-    .freeship-placeholder {
-      min-height: 20px;
-    }
-    /* CARD NHÀ HÀNG ĐỀU NHAU */
-    .restaurant-card {
-      border: none;
-      border-radius: 15px;
-      overflow: hidden;
-      background: white;
-      transition: all 0.3s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .restaurant-card img {
-      width: 100%;
-      height: 180px; /* cố định chiều cao ảnh */
-      object-fit: cover;
-    }
-
-    .restaurant-card .card-body {
-      flex: 1; /* đẩy phần nội dung giãn đều */
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 15px;
-    }
-
-    .restaurant-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Giúp freeship placeholder giữ chiều cao cố định */
-    .freeship-placeholder {
-      min-height: 20px;
-    }
-
-    /* Nút xem menu luôn nằm sát dưới */
-    .restaurant-card .btn {
-      margin-top: auto;
-    }
-
   </style>
 </head>
 
 <body>
 
-<<<<<<< HEAD
-
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
-  <div class="container">
-    <a class="navbar-brand" href="#">🍔 FoodNow</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <form th:action="@{/search}" method="get" class="d-flex mx-lg-auto my-2 my-lg-0" role="search" style="max-width: 400px; width: 100%;">
-        <input
-                type="text"
-                name="keyword"
-                class="form-control me-2 rounded-pill px-3"
-                placeholder="🔍 Tìm món, nhà hàng..."
-                aria-label="Search"
-                required>
-        <button class="btn btn-outline-light rounded-pill px-3" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </form>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item mx-2">
-          <a class="nav-link" th:href="@{/home}">Trang chủ</a>
-        </li>
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" href="menu">Giỏ hàng</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
-        <li class="nav-item mx-2">
-          <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-=======
 <!-- ===== HEADER ===== -->
 <div th:replace="~{common/template::header}"></div>
->>>>>>> 4de31861713cba9794955c18e81a83e562f8ddac
 
 <!-- ===== BANNER ===== -->
 <section class="container py-4">
@@ -204,19 +141,23 @@
   <div class="row">
     <div class="col-md-3 mb-4" th:each="food : ${foods}">
       <div class="product-card">
-        <a th:href="@{'/food/' + ${food.id}}">
-          <img th:src="${food.image}" alt="food-image">
+        <a th:href="@{'/foods/' + ${food.id}}">
+          <img th:src="@{${food.image}}" alt="food-image">
         </a>
         <h5>
-          <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
+          <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none"
+             th:text="${food.title}">Tên món</a>
         </h5>
         <p>
           <span class="text-danger fw-bold"
                 th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
         </p>
-        <button class="btn btn-outline-danger w-100">
-          <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
-        </button>
+        <form th:action="@{/cart/add}" method="post">
+          <input type="hidden" th:name="foodId" th:value="${food.id}">
+          <button type="submit" class="btn btn-outline-danger w-100">
+            <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+          </button>
+        </form>
       </div>
     </div>
   </div>

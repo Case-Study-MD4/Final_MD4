@@ -46,11 +46,13 @@ public class CartController {
                 restaurantId = menuList.get(0).getRestaurant().getId();
             }
         }
+
         Map<String, Object> resp = new HashMap<>();
         resp.put("cart", cart);
         resp.put("restaurantId", restaurantId);
         return resp;
     }
+
     @GetMapping
     public String viewCart(Model model) {
         var cartItems = cartService.getCart();
