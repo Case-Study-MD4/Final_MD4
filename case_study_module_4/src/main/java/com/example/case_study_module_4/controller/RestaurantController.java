@@ -19,6 +19,7 @@ public class RestaurantController {
     private IRestaurantService restaurantService;
 
 
+
     @Autowired
     private FoodService foodService;
 
@@ -28,4 +29,11 @@ public class RestaurantController {
         return "restaurant/list";
     }
 
+    @GetMapping("/restaurants/{id}")
+    public String viewRestaurantMenu(@PathVariable Long id, Model model) {
+        Restaurant restaurant = restaurantService.findById(id);
+        model.addAttribute("restaurant", restaurant);
+        model.addAttribute("foods", restaurant.getFoods());
+        return "restaurant/menu";
+    }
 }
