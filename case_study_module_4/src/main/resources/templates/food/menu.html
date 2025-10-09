@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Thực đơn & Giỏ hàng</title>
+    <th:block th:replace="~{common/template::library}"></th:block>
     <style>
         body {
             font-family: Inter, sans-serif;
@@ -240,11 +241,11 @@
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(123, 44, 191, 0.3);
         }
-git a
     </style>
 </head>
 <body>
-
+<!-- ===== HEADER ===== -->
+<div th:replace="~{common/template::header}"></div>
 <div class="container">
     <!-- MENU -->
     <div class="menu">
