@@ -236,6 +236,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- GIỎ HÀNG -->
     <div class="cart">
         <h2>🛒 Giỏ hàng</h2>
@@ -252,6 +253,14 @@
             <tbody id="cart-body"></tbody>
         </table>
         <div class="total">Tổng cộng: <span id="cart-total">0</span></div>
+=======
+<!-- Chỉ hiển thị với Admin -->
+
+
+<a sec:authorize="hasAnyAuthority('ROLE_RESTAURANT_OWNER','ROLE_ADMIN')" th:href="@{/menu/add_food}" class="btn-add">
+    + Thêm món mới
+</a>
+>>>>>>> cc5720208c64b22bf58b6fa0335e2226cb843651
 
         <form id="checkout-form" action="/cart/checkout" method="post">
             <input type="hidden" name="restaurantId" id="restaurantId">

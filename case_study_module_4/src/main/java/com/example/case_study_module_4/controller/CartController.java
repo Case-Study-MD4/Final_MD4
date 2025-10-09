@@ -55,11 +55,17 @@ public class CartController {
             }
         }
 
+<<<<<<< HEAD
         Map<String, Object> resp = new HashMap<>();
         resp.put("cart", cart);
         resp.put("restaurantId", restaurantId);
 
         return resp;
+=======
+
+        cartService.addToCart(food, quantity);
+        return "redirect:/cart";
+>>>>>>> cc5720208c64b22bf58b6fa0335e2226cb843651
     }
 
 

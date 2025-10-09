@@ -42,10 +42,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // ✅ cho phép static files (tránh loop do 302 liên tục)
-                        .requestMatchers("/css/**","/js/**","/images/**","/webjars/**").permitAll()
+                        .requestMatchers("/css/**","/js/**","/images/**","/webjars/**","home","menu").permitAll()
 
                         // ✅ trang public
-                        .requestMatchers("/login", "/logoutSuccessful", "/403").permitAll()
+                        .requestMatchers("/login", "/logoutSuccessful", "/403","/home").permitAll()
 
                         // ✅ phân quyền cụ thể
                         .requestMatchers("/orders/create").hasRole("ADMIN")

@@ -148,6 +148,9 @@
     hr {
       border-color: rgba(255, 255, 255, 0.2);
     }
+    .freeship-placeholder {
+      min-height: 20px; /* đảm bảo mỗi thẻ đều có cùng chiều cao */
+    }
   </style>
 </head>
 
@@ -176,9 +179,11 @@
         </button>
       </form>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Trang chủ</a></li>
+        <li class="nav-item mx-2">
+          <a class="nav-link" th:href="@{/home}">Trang chủ</a>
+        </li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Nhà hàng</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" href="#">Đơn hàng</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="#">Giỏ hàng</a></li>
         <li class="nav-item mx-2"><a class="nav-link" href="#">Đăng nhập</a></li>
         <li class="nav-item mx-2">
           <a class="nav-link" href="#"><i class="fa-solid fa-cart-plus"></i></a>
@@ -216,7 +221,6 @@
 <section class="container py-4">
   <div class="section-header">
     <h4>🍽️ Nhà hàng nổi bật</h4>
-    <a href="#">Xem tất cả</a>
   </div>
 
   <div class="row">
@@ -234,9 +238,8 @@
           <p class="text-muted small mb-1" th:text="${restaurant.address}">Địa chỉ</p>
 
           <!-- Freeship -->
-          <p class="text-success small"
-             th:if="${restaurant.isFreeship}"
-             th:text="'🚚 Freeship'"></p>
+          <p class="freeship-placeholder text-success small mb-1"
+             th:text="${restaurant.isFreeship} ? '🚚 Freeship' : ''"></p>
 
           <!-- Nút xem menu -->
           <a th:href="@{'/restaurants/' + ${restaurant.id}}" class="btn btn-danger w-100 mt-2">
@@ -253,7 +256,9 @@
 <section class="container py-4">
   <div class="section-header d-flex justify-content-between align-items-center mb-3">
     <h4>🍛 Món ăn phổ biến</h4>
-    <a href="#" class="text-danger text-decoration-none">Xem thêm</a>
+    <a th:href="@{/food}" class="text-danger text-decoration-none fw-semibold">
+      Xem thêm <i class="fa-solid fa-arrow-right ms-1"></i>
+    </a>
   </div>
 
   <div class="row">
@@ -266,9 +271,15 @@
         <h5>
           <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
         </h5>
-        <p th:text="${#numbers.formatDecimal(food.price, 0, 0, 'COMMA')} + 'đ'">Giá món ăn</p>
+        <p>
+          Giá:
+          <span class="text-danger fw-bold"
+                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+          </span>
+        </p>
+
         <button class="btn btn-outline-danger w-100">
-          <i class="fa-solid fa-cart-plus me-2"></i>Đặt món
+          <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
         </button>
       </div>
     </div>
