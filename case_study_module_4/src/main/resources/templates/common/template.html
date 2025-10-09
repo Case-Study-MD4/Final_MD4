@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:fragment="library">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark py-3"
          style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" th:href="@{/home}">🍔 FoodNow</a>
+            <a class="navbar-brand fw-bold text-white" th:href="@{/home}">🍔 𝓕𝓸𝓸𝓭𝓝𝓸𝔀</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -49,7 +49,24 @@
                     <li class="nav-item mx-2"><a class="nav-link" th:href="@{/home}">Trang chủ</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurants}">Nhà hàng</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" th:href="@{/menu}">Giỏ hàng</a></li>
-                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/login}">Đăng nhập</a></li>
+                    <!-- Nếu chưa đăng nhập -->
+                    <li class="nav-item mx-2"
+                        sec:authorize="isAnonymous()">
+                        <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
+                    </li>
+
+                    <!-- Nếu đã đăng nhập -->
+                    <li class="nav-item mx-2 dropdown"
+                        sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            👤 <span sec:authentication="name">Tài khoản</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Thông tin tài khoản</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item mx-2">
                         <a class="nav-link" th:href="@{/cart}"><i class="fa-solid fa-cart-plus"></i></a>
                     </li>
@@ -74,7 +91,7 @@
             </div>
             <div class="col-md-4 mb-3">
                 <h5 style="color:white; font-weight:600;">Theo dõi</h5>
-                <a href="#"><i class="fab fa-facebook fs-4 me-3 text-danger"></i></a>
+                <a href="https://www.facebook.com/cac.vithan"><i class="fab fa-facebook fs-4 me-3 text-danger"></i></a>
                 <a href="#"><i class="fab fa-instagram fs-4 me-3 text-danger"></i></a>
                 <a href="#"><i class="fab fa-tiktok fs-4 text-danger"></i></a>
             </div>

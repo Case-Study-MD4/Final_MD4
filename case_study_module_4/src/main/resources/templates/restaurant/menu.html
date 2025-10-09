@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Menu - ' + ${restaurant.title}">Menu nhà hàng</title>
+    <th:block th:replace="~{common/template::library}"></th:block>
+    <style>
+        body {
+            background-color: #fdfdfd;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+
+        /* --- Restaurant Info --- */
+        .restaurant-info {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .restaurant-info img {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+        }
+
+        .restaurant-details {
+            padding: 20px;
+        }
+
+        /* --- Product Card --- */
+        .product-card {
+            border-radius: 12px;
+            background: white;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-card img {
+            border-radius: 10px;
+            height: 160px;
+            width: 100%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- ===== HEADER ===== -->
+<div th:replace="~{common/template::header}"></div>
+
+<!-- ===== RESTAURANT INFO ===== -->
+<div class="container py-4">
+    <div class="restaurant-info">
+        <div class="col-md-5">
+            <img th:src="${restaurant.image}" alt="restaurant-image">
+        </div>
+        <div class="col-md-7 restaurant-details">
+            <h2 class="fw-bold mb-2" th:text="${restaurant.title}">Tên nhà hàng</h2>
+            <p class="text-muted mb-2" th:text="${restaurant.subtitle}">Mô tả ngắn</p>
+            <p><strong>📍 Địa chỉ:</strong> <span th:text="${restaurant.address}"></span></p>
+            <p th:if="${restaurant.isFreeship == 1}" class="text-success mb-2">🚚 Freeship </p>
+            <p th:text="${restaurant.description}">Mô tả chi tiết nhà hàng</p>
+            <p class="text-secondary small">
+                <strong>Ngày mở cửa:</strong> <span th:text="${#temporals.format(restaurant.openDate, 'dd/MM/yyyy')}"></span>
+
+
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== MENU FOODS ===== -->
+    <h4 class="mt-4 mb-3">🍛 Danh sách món ăn</h4>
+    <div class="row">
+        <div class="col-md-3 mb-4" th:each="food : ${foods}">
+            <div class="product-card">
+                <a th:href="@{'/food/' + ${food.id}}">
+                    <img th:src="${food.image}" alt="food-image">
+                </a>
+                <h5>
+                    <a th:href="@{'/food/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
+                </h5>
+                <p class="mb-2">
+          <span class="text-danger fw-bold"
+                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                </p>
+                <button class="btn btn-outline-danger w-100 mt-auto">
+                    <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div th:replace="~{common/template::footer}"></div>
+</body>
+</html>
