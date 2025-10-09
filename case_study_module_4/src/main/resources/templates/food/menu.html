@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Thực đơn & Giỏ hàng</title>
-    <style>
-        body {
-            font-family: Inter, sans-serif;
-            background: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
+    <th:block th:replace="~{common/template::library}"></th:block>
 
+    <style>
         .container {
             display: flex;
             max-width: 1200px;
@@ -220,11 +215,33 @@
         .status-canceled {
             background: #c0392b;
         }
+        .btn-add-new {
+            display: inline-block;
+            text-align: center;
+            background: #f8f1ff;
+            color: #7b2cbf;
+            font-weight: 600;
+            padding: 10px 0;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 2px dashed #c77dff;
+        }
+
+        .btn-add-new:hover {
+            background: #7b2cbf;
+            color: white;
+            border-color: #7b2cbf;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(123, 44, 191, 0.3);
+        }
     </style>
 </head>
-<body>
+<div th:replace="~{common/template::header}"></div>
 
+<body>
 <div class="container">
+
     <!-- MENU -->
     <div class="menu">
         <div class="card" th:each="menu : ${menuList}">
@@ -254,10 +271,12 @@
         <div class="total">Tổng cộng: <span id="cart-total">0</span></div>
 <!-- Chỉ hiển thị với Admin -->
 
+        <a sec:authorize="hasAnyAuthority('ROLE_RESTAURANT_OWNER','ROLE_ADMIN')"
+           th:href="@{/menu/add_food}"
+           class="btn-add-new">
+            <i class="fa-solid fa-plus me-1"></i> Thêm món mới
+        </a>
 
-<a sec:authorize="hasAnyAuthority('ROLE_RESTAURANT_OWNER','ROLE_ADMIN')" th:href="@{/menu/add_food}" class="btn-add">
-    + Thêm món mới
-</a>
 
         <form id="checkout-form" action="/cart/checkout" method="post">
             <input type="hidden" name="restaurantId" id="restaurantId">
@@ -387,6 +406,8 @@
         }
     });
 </script>
+<div th:replace="~{common/template::footer}"></div>
+
 
 </body>
 </html>

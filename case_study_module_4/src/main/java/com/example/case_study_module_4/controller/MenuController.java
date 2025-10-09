@@ -187,8 +187,7 @@ public class MenuController {
 
 
 
-    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
-    @GetMapping("/add_food")
+//    @GetMapping("/add_food")
     public String addFoodForm(Model model) {
         model.addAttribute("food", new Food());
         model.addAttribute("restaurants", restaurantRepository.findAll());
