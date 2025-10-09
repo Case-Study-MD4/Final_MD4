@@ -14,9 +14,18 @@ public class CartItemDto {
     private String foodName;
     private BigDecimal price;
     private int quantity;
+    private Long restaurantId;
 
     public CartItemDto(Long foodId, int quantity) {
         this.foodId = foodId;
         this.quantity = quantity;
+    }
+
+    public CartItemDto(Long foodId, String foodName, Double price, int quantity, Long restaurantId) {
+        this.foodId = foodId;
+        this.foodName = foodName;
+        this.price = BigDecimal.valueOf(price);
+        this.quantity = quantity;
+        this.restaurantId = restaurantId;
     }
 }

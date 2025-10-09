@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +29,28 @@ public class CartService implements ICartService {
         return cart;
     }
 
+    public List<Map<String, Object>> getCartForJson() {
+        List<Map<String, Object>> cartJson = new ArrayList<>();
+        for (CartItemDto item : getCart()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("foodId", item.getFoodId());
+            map.put("foodName", item.getFoodName());
+            map.put("price", item.getPrice().doubleValue());
+            map.put("quantity", item.getQuantity());
+            map.put("restaurantId", item.getRestaurantId());
+            cartJson.add(map);
+        }
+        return cartJson;
+    }
+
     public void addToCart(Food food, int quantity) {
+        if (food.getRestaurant() == null) {
+            throw new RuntimeException("Món ăn chưa được gán nhà hàng!");
+        }
+
         List<CartItemDto> cart = getCart();
+
+        // Kiểm tra món đã có trong giỏ chưa
         for (CartItemDto item : cart) {
             if (item.getFoodId().equals(food.getId())) {
                 item.setQuantity(item.getQuantity() + quantity);
@@ -36,9 +58,16 @@ public class CartService implements ICartService {
                 return;
             }
         }
-        BigDecimal itemPrice = BigDecimal.valueOf(food.getPrice());
 
-        cart.add(new CartItemDto(food.getId(), food.getTitle(), itemPrice, quantity));
+        BigDecimal itemPrice = BigDecimal.valueOf(food.getPrice());
+        cart.add(new CartItemDto(
+                food.getId(),
+                food.getTitle(),
+                itemPrice,
+                quantity,
+                food.getRestaurant().getId()
+        ));
+
         session.setAttribute("cart", cart);
     }
 
@@ -60,28 +89,25 @@ public class CartService implements ICartService {
 
     @Override
     public void updateQuantity(Long foodId, int quantity) {
-        List<CartItemDto> cart = getCart(); // 👈 lấy giỏ từ session
+        List<CartItemDto> cart = getCart();
         for (CartItemDto item : cart) {
             if (item.getFoodId().equals(foodId)) {
                 item.setQuantity(quantity);
                 break;
             }
         }
-        session.setAttribute("cart", cart); // cập nhật lại session
+        session.setAttribute("cart", cart);
     }
 
     @Override
     public double getItemSubtotal(Long foodId) {
-        List<CartItemDto> cart = getCart(); // 👈 lấy giỏ từ session
+        List<CartItemDto> cart = getCart();
         for (CartItemDto item : cart) {
             if (item.getFoodId().equals(foodId)) {
-                return item.getPrice()
-                        .multiply(BigDecimal.valueOf(item.getQuantity()))
-                        .doubleValue();
+                return item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())).doubleValue();
             }
         }
         return 0;
     }
-
 
 }
