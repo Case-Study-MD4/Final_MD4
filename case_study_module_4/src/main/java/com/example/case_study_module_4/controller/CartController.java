@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +47,14 @@ public class CartController {
                 restaurantId = menuList.get(0).getRestaurant().getId();
             }
         }
+
         Map<String, Object> resp = new HashMap<>();
         resp.put("cart", cart);
         resp.put("restaurantId", restaurantId);
         return resp;
     }
+
+
 
     @GetMapping
     public String viewCart(Model model) {

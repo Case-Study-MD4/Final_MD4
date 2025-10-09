@@ -2,63 +2,166 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Lịch sử đơn hàng</title>
+    <title>Lịch sử đơn hàng | FoodNow</title>
     <style>
-        body { font-family: Inter, sans-serif; background: #f8f9fa; padding: 30px; }
-        .order-card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .order-items { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .order-items th, .order-items td { padding: 8px; border: 1px solid #ccc; text-align: center; }
-        .order-items th { background: #eee; }
-        .total { text-align: right; font-weight: bold; margin-top: 10px; }
-        .status { padding: 4px 8px; border-radius: 4px; color: #fff; }
-        .status-pending { background: #f39c12; }
-        .status-completed { background: #27ae60; }
-        .status-canceled { background: #c0392b; }
+        /* ========== GLOBAL STYLE ========== */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdfdfd;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #ff4d4f;
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ========== WRAPPER ========== */
+        .orders-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        /* ========== CARD ========== */
+        .order-card {
+            width: 560px;
+            background: #fff;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .order-header strong {
+            color: #ff4d4f;
+        }
+
+        /* ========== STATUS BADGE ========== */
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { background: #ffa940; }
+        .status-completed { background: #52c41a; }
+        .status-canceled { background: #ff4d4f; }
+
+        /* ========== TABLE ========== */
+        .order-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .order-items th, .order-items td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-items th {
+            background: #fff0f0;
+            color: #ff4d4f;
+            font-weight: 600;
+        }
+
+        .order-items tbody tr:hover {
+            background: #fff6f6;
+        }
+
+        /* ========== TOTAL ========== */
+        .total-row td {
+            text-align: right;
+            font-size: 14px;
+            font-weight: 700;
+            background: #fff5f5;
+            color: #ff4d4f;
+            border-top: 2px solid #ffe0e0;
+        }
+
+        @media (max-width: 700px) {
+            .order-card {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">Lịch sử đơn hàng của bạn</h2>
+<h2>Lịch sử đơn hàng</h2>
 
-<div th:each="order : ${orders}" class="order-card">
-    <div class="order-header">
-        <div>
-            <strong>Mã đơn hàng:</strong> <span th:text="${order.id}"></span><br>
-            <strong>Nhà hàng:</strong> <span th:text="${order.restaurant.title}"></span><br>
-            <strong>Ngày đặt:</strong> <span th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></span>
+<div class="orders-wrapper">
+    <div th:each="order : ${orders}" class="order-card">
+        <div class="order-header">
+            <div>
+                <strong>Mã đơn:</strong> <span th:text="${order.id}"></span><br>
+                <strong>Nhà hàng:</strong> <span th:text="${order.restaurant.title}"></span><br>
+                <strong>Ngày:</strong> <span th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></span>
+            </div>
+            <div>
+        <span th:switch="${order.status}">
+          <span th:case="0" class="status status-pending">Đang xử lý</span>
+          <span th:case="1" class="status status-completed">Hoàn thành</span>
+          <span th:case="2" class="status status-canceled">Đã hủy</span>
+          <span th:case="*">Không xác định</span>
+        </span>
+            </div>
         </div>
-        <div>
-            <strong>Trạng thái:</strong>
-            <span th:switch="${order.status}">
-                <span th:case="0" class="status status-pending">Đang xử lý</span>
-                <span th:case="1" class="status status-completed">Hoàn thành</span>
-                <span th:case="2" class="status status-canceled">Đã hủy</span>
-                <span th:case="*">Không xác định</span>
-            </span>
-        </div>
+
+        <table class="order-items">
+            <thead>
+            <tr>
+                <th>Món</th>
+                <th>SL</th>
+                <th>Giá</th>
+                <th>Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.items}">
+                <td th:text="${item.food.title}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(item.food.price, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
+                <td th:text="${(item.food.price != null and item.quantity != null) ? #numbers.formatDecimal(item.food.price * item.quantity, 0, 'COMMA', 0, 'POINT') + '₫' : '0₫'}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="total-row">
+                <td colspan="3">Tổng cộng:</td>
+                <td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
+            </tr>
+            </tfoot>
+        </table>
     </div>
-
-    <table class="order-items">
-        <thead>
-        <tr>
-            <th>Tên món</th>
-            <th>Số lượng</th>
-            <th>Giá</th>
-            <th>Tổng tiền</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${order.items}">
-            <td th:text="${item.food.title}"></td>
-            <td th:text="${item.quantity}"></td>
-            <td th:text="${item.food.price}"></td>
-            <td th:text="${order.totalPrice}"></td>
-
-        </tr>
-        </tbody>
-    </table>
-
 </div>
 
 </body>

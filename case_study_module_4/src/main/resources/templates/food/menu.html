@@ -312,7 +312,7 @@
             const foodId = btn.dataset.id;
             const quantity = parseInt(btn.previousElementSibling.value);
 
-            fetch('/menu/add-to-cart', {
+            fetch('/cart/add-to-cart', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `foodId=${foodId}&quantity=${quantity}`
