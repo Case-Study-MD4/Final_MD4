@@ -16,7 +16,7 @@ public class FoodController {
 
     @GetMapping("/foods")
     public String showFoodTop(Model model) {
-        model.addAttribute("foods", foodService.findTopFoods());
+        model.addAttribute("foods", foodService.findAll());
         return "home/home";
     }
     @GetMapping("/food/{id}")

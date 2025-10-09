@@ -95,6 +95,46 @@
         .navbar-nav .nav-link:hover {
             color: #ffe8e8 !important;
         }
+        /* CARD NHÀ HÀNG ĐỀU NHAU */
+        .restaurant-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .restaurant-card img {
+            width: 100%;
+            height: 180px; /* cố định chiều cao ảnh */
+            object-fit: cover;
+        }
+
+        .restaurant-card .card-body {
+            flex: 1; /* đẩy phần nội dung giãn đều */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Giúp freeship placeholder giữ chiều cao cố định */
+        .freeship-placeholder {
+            min-height: 20px;
+        }
+
+        /* Nút xem menu luôn nằm sát dưới */
+        .restaurant-card .btn {
+            margin-top: auto;
+        }
 
     </style>
 </head>
@@ -104,42 +144,29 @@
 <!-- ===== HEADER ===== -->
 <div th:replace="~{common/template::header}"></div>
 
-<div class="container py-4">
-    <h3 class="mb-4 text-center text-danger fw-bold">🍽️ Danh sách món ăn</h3>
-    <hr>
+<!-- ===== RESTAURANTS ===== -->
+<section class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>🍽️ Nhà hàng nổi bật</h4>
+    </div>
 
     <div class="row">
-        <!-- Lặp qua danh sách món ăn -->
-        <div class="col-md-3 mb-4" th:each="food : ${foods}">
-            <div class="card food-card shadow-sm h-100">
-
-                <!-- Ảnh món ăn (click vào để xem chi tiết) -->
-                <a th:href="@{'/food/' + ${food.id}}">
-                    <img th:src="@{${food.image}}" alt="Food image" class="card-img-top">
-                </a>
-
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-1" th:text="${food.title}">Tên món ăn</h5>
-                    <p>
-                        Giá:
-                        <span class="text-danger fw-bold"
-                              th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
-  </span>
-                    </p>
-
-                    <p class="time-ship mb-3" th:text="'⏱ ' + ${food.timeShip}">20 phút</p>
-
-                    <div class="mt-auto d-grid gap-2">
-                        <!-- Nút đặt hàng -->
-                        <a th:href="@{'/order/add/' + ${food.id}}" class="btn btn-order w-100">
-                            <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
-                        </a>
-                    </div>
+        <div class="col-md-3 mb-4" th:each="restaurant : ${restaurants}">
+            <div class="restaurant-card card shadow-sm">
+                <img th:src="@{${restaurant.image}}" class="card-img-top" alt="restaurant-image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${restaurant.title}">Nhà hàng ABC</h5>
+                    <p class="text-muted small mb-1" th:text="${restaurant.address}">Địa chỉ</p>
+                    <p class="freeship-placeholder text-success small mb-1"
+                       th:text="${restaurant.isFreeship} ? '🚚 Freeship' : ''"></p>
+                    <a th:href="@{'/restaurants/' + ${restaurant.id}}" class="btn btn-danger w-100 mt-2">
+                        Xem menu
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- ===== FOOTER ===== -->
 <div th:replace="~{common/template::footer}"></div>
