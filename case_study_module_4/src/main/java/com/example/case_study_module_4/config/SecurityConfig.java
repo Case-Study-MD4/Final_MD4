@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -61,10 +62,11 @@ public class SecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .failureUrl("/login?error=true")
-                        // ✅ luôn chuyển về trang lịch sử sau login, tránh lặp
-                        .defaultSuccessUrl("/menu", true)
+
+                        .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/logoutSuccessful")
@@ -73,8 +75,10 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .exceptionHandling(ex -> ex.accessDeniedPage("/403"))
+                .requestCache(RequestCacheConfigurer::disable)
                 // ✅ đăng ký provider rõ ràng
                 .authenticationProvider(authenticationProvider(passwordEncoder()));
+
 
         return httpSecurity.build();
     }

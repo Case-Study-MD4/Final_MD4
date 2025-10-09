@@ -8,71 +8,23 @@
   <th:block th:replace="~{common/template::library}"></th:block>
 
   <style>
-    /* ========== GLOBAL STYLE ========== */
+    /* --- HOME PAGE SPECIFIC STYLE --- */
     body {
       background-color: #fdfdfd;
       font-family: 'Poppins', sans-serif;
       color: #333;
     }
 
-    a {
-      text-decoration: none;
-    }
-
-    /* ========== NAVBAR ========== */
-    .navbar {
-      background: linear-gradient(90deg, #ff4d4f, #ff7875);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-brand {
-      font-weight: 700;
-      color: white !important;
-      font-size: 1.3rem;
-      letter-spacing: 0.5px;
-    }
-
-    .navbar-nav .nav-link {
-      color: white !important;
-      font-weight: 500;
-      transition: 0.3s;
-    }
-
-    .navbar-nav .nav-link:hover {
-      color: #ffe8e8 !important;
-    }
-
-    /* ========== CAROUSEL BANNER ========== */
     .carousel-item img {
       height: 420px;
       object-fit: cover;
       border-radius: 15px;
     }
 
-    /* ========== SECTION TITLE ========== */
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-header h4 {
-      font-weight: 700;
-      color: #222;
-    }
-
-    .section-header a {
-      color: #ff4d4f;
-      font-weight: 500;
-    }
-
-    /* ========== RESTAURANT CARD ========== */
     .restaurant-card {
       border: none;
       border-radius: 15px;
       overflow: hidden;
-      background: white;
       transition: all 0.3s ease;
     }
 
@@ -81,17 +33,6 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .restaurant-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .restaurant-card .card-body {
-      padding: 15px;
-    }
-
-    /* ========== FOOD CARD ========== */
     .product-card {
       border-radius: 12px;
       background: white;
@@ -113,49 +54,56 @@
       object-fit: cover;
     }
 
-    .product-card h5 {
-      margin-top: 10px;
-      font-weight: 600;
-      font-size: 1.05rem;
-    }
-
-    .product-card p {
-      color: #ff4d4f;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    /* ========== FOOTER ========== */
-    footer {
-      background-color: #1a1a1a;
-      color: #ccc;
-    }
-
-    footer h5 {
-      color: white;
-      font-weight: 600;
-    }
-
-    footer a {
-      color: #ff7875;
-      transition: 0.3s;
-    }
-
-    footer a:hover {
-      color: white;
-    }
-
-    hr {
-      border-color: rgba(255, 255, 255, 0.2);
-    }
     .freeship-placeholder {
-      min-height: 20px; /* đảm bảo mỗi thẻ đều có cùng chiều cao */
+      min-height: 20px;
     }
+    /* CARD NHÀ HÀNG ĐỀU NHAU */
+    .restaurant-card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .restaurant-card img {
+      width: 100%;
+      height: 180px; /* cố định chiều cao ảnh */
+      object-fit: cover;
+    }
+
+    .restaurant-card .card-body {
+      flex: 1; /* đẩy phần nội dung giãn đều */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Giúp freeship placeholder giữ chiều cao cố định */
+    .freeship-placeholder {
+      min-height: 20px;
+    }
+
+    /* Nút xem menu luôn nằm sát dưới */
+    .restaurant-card .btn {
+      margin-top: auto;
+    }
+
   </style>
 </head>
 
 <body>
 
+<<<<<<< HEAD
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
@@ -192,6 +140,10 @@
     </div>
   </div>
 </nav>
+=======
+<!-- ===== HEADER ===== -->
+<div th:replace="~{common/template::header}"></div>
+>>>>>>> 4de31861713cba9794955c18e81a83e562f8ddac
 
 <!-- ===== BANNER ===== -->
 <section class="container py-4">
@@ -207,7 +159,6 @@
         <img th:src="@{/images/home/banner3.webp}" class="d-block w-100" alt="banner 3">
       </div>
     </div>
-
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanner" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>
     </button>
@@ -219,29 +170,19 @@
 
 <!-- ===== RESTAURANTS ===== -->
 <section class="container py-4">
-  <div class="section-header">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>🍽️ Nhà hàng nổi bật</h4>
   </div>
 
   <div class="row">
-    <!-- Lặp qua danh sách nhà hàng -->
     <div class="col-md-3 mb-4" th:each="restaurant : ${restaurants}">
       <div class="restaurant-card card shadow-sm">
-        <!-- Ảnh nhà hàng -->
         <img th:src="@{${restaurant.image}}" class="card-img-top" alt="restaurant-image">
-
         <div class="card-body">
-          <!-- Tên nhà hàng -->
           <h5 class="card-title" th:text="${restaurant.title}">Nhà hàng ABC</h5>
-
-          <!-- Địa chỉ -->
           <p class="text-muted small mb-1" th:text="${restaurant.address}">Địa chỉ</p>
-
-          <!-- Freeship -->
           <p class="freeship-placeholder text-success small mb-1"
              th:text="${restaurant.isFreeship} ? '🚚 Freeship' : ''"></p>
-
-          <!-- Nút xem menu -->
           <a th:href="@{'/restaurants/' + ${restaurant.id}}" class="btn btn-danger w-100 mt-2">
             Xem menu
           </a>
@@ -249,20 +190,18 @@
       </div>
     </div>
   </div>
-
 </section>
 
 <!-- ===== FOODS ===== -->
 <section class="container py-4">
-  <div class="section-header d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>🍛 Món ăn phổ biến</h4>
-    <a th:href="@{/food}" class="text-danger text-decoration-none fw-semibold">
+    <a th:href="@{/foods}" class="text-danger text-decoration-none fw-semibold">
       Xem thêm <i class="fa-solid fa-arrow-right ms-1"></i>
     </a>
   </div>
 
   <div class="row">
-
     <div class="col-md-3 mb-4" th:each="food : ${foods}">
       <div class="product-card">
         <a th:href="@{'/food/' + ${food.id}}">
@@ -272,48 +211,19 @@
           <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
         </h5>
         <p>
-          Giá:
           <span class="text-danger fw-bold"
-                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
-          </span>
+                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
         </p>
-
         <button class="btn btn-outline-danger w-100">
           <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
         </button>
       </div>
     </div>
-
   </div>
 </section>
 
-
 <!-- ===== FOOTER ===== -->
-<footer class="footer py-5 mt-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <h5>FoodNow</h5>
-        <p>Ứng dụng đặt món ăn tiện lợi — kết nối khách hàng và nhà hàng trong vài giây.</p>
-      </div>
-      <div class="col-md-4 mb-3">
-        <h5>Liên hệ</h5>
-        <p>📞 0987 654 321</p>
-        <p>✉️ support@foodnow.vn</p>
-      </div>
-      <div class="col-md-4 mb-3">
-        <h5>Theo dõi</h5>
-        <a href="#"><i class="fab fa-facebook fs-4 me-3"></i></a>
-        <a href="#"><i class="fab fa-instagram fs-4 me-3"></i></a>
-        <a href="#"><i class="fab fa-tiktok fs-4"></i></a>
-      </div>
-    </div>
-    <hr>
-    <div class="text-center">
-      <small>© 2025 FoodNow — Designed by TaamLee</small>
-    </div>
-  </div>
-</footer>
+<div th:replace="~{common/template::footer}"></div>
 
 </body>
 </html>

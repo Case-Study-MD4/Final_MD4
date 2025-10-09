@@ -12,4 +12,6 @@ public interface IFoodRepository extends JpaRepository<Food, Long> {
     List<Food> findTop8ByOrderByIdDesc();
     @Query("SELECT f FROM Food f WHERE LOWER(f.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Food> searchByTitle(String keyword);
+
+
 }
