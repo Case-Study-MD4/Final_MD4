@@ -1,145 +1,386 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="vi">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Thực đơn hôm nay</title>
+    <title>Thực đơn & Giỏ hàng</title>
     <style>
         body {
             font-family: Inter, sans-serif;
             background: #f8f9fa;
             margin: 0;
-            padding: 40px 20px;
-            color: #333;
+            padding: 0;
         }
 
-        h2 {
-            text-align: center;
-            color: #e74c3c;
-            margin-bottom: 10px;
-            font-size: 28px;
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            gap: 20px;
         }
 
-        .btn-add {
-            display: inline-block;
-            background: #e74c3c;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 20px auto 30px;
-            display: block;
-            width: fit-content;
-            transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
-        }
-
-        .btn-add:hover {
-            background: #d35400;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
-        }
-
+        /* ===== MENU ===== */
         .menu {
+            flex: 2;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
         }
 
         .card {
-            background: white;
+            background: #fff;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            padding: 20px 15px;
-            text-align: center;
-            transition: 0.25s ease-in-out;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         .card img {
             width: 100%;
             height: 150px;
             object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .card h3 {
-            margin: 10px 0 6px;
-            font-size: 18px;
+            font-size: 16px;
+            margin: 5px 0;
             color: #333;
+            text-align: center;
         }
 
         .price {
             color: #e74c3c;
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
-        form {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        input[type="number"] {
+        .card input {
             width: 60px;
-            padding: 6px;
+            text-align: center;
             border-radius: 6px;
             border: 1px solid #ddd;
+            padding: 3px 0;
+            margin-bottom: 5px;
+        }
+
+        .card button {
+            width: 100%;
+            padding: 6px 0;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .card button:hover {
+            background: #d35400;
+        }
+
+        /* ===== CART ===== */
+        .cart {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
             text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #empty-cart {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 15px 0;
+        }
+
+        #cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
             font-size: 14px;
         }
 
-        button {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
+        #cart-table th, #cart-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
         }
 
-        button:hover {
+        #cart-table th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        #cart-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 16px;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .btn-order {
+            width: 100%;
+            padding: 10px;
+            background: #e74c3c;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-order:hover:not(:disabled) {
             background: #d35400;
+        }
+
+        .btn-order:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* ===== Lịch sử đơn hàng ===== */
+        .history {
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .order-items {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-items th, .order-items td {
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .status-pending {
+            background: #f39c12;
+        }
+
+        .status-completed {
+            background: #27ae60;
+        }
+
+        .status-canceled {
+            background: #c0392b;
         }
     </style>
 </head>
 <body>
 
-<h2>🍔 Thực đơn hôm nay</h2>
+<div class="container">
+    <!-- MENU -->
+    <div class="menu">
+        <div class="card" th:each="menu : ${menuList}">
+            <img th:src="${menu.food.image}" alt="Ảnh món">
+            <h3 th:text="${menu.food.title}"></h3>
+            <div class="price" th:text="${menu.food.price} + '₫'"></div>
+            <input type="number" min="1" value="1" class="qty">
+            <button type="button" class="add-to-cart" th:data-id="${menu.food.id}">Thêm vào giỏ</button>
+        </div>
+    </div>
 
-<!-- Chỉ hiển thị với Admin -->
-<a sec:authorize="hasAuthority('ROLE_RESTAURANT_OWNER')" th:href="@{/menu/add_food}" class="btn-add">
-    + Thêm món mới
-</a>
+    <!-- GIỎ HÀNG -->
+    <div class="cart">
+        <h2>🛒 Giỏ hàng</h2>
+        <div id="empty-cart">Giỏ hàng trống</div>
+        <table id="cart-table" style="display:none;">
+            <thead>
+            <tr>
+                <th>Món</th>
+                <th>SL</th>
+                <th>Giá</th>
+                <th>Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody id="cart-body"></tbody>
+        </table>
+        <div class="total">Tổng cộng: <span id="cart-total">0</span></div>
 
-
-<div class="menu">
-    <div class="card" th:each="menu : ${menuList}">
-        <img th:src="${menu.food.image}" alt="Ảnh món ăn">
-        <h3 th:text="${menu.food.title}"></h3>
-        <div class="price" th:text="${#numbers.formatDecimal(menu.food.price, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
-        <form th:action="@{/cart/add}" method="post">
-            <input type="hidden" name="foodId" th:value="${menu.food.id}"/>
-            <input type="number" name="quantity" min="1" value="1"/>
-            <button type="submit">Thêm vào giỏ</button>
+        <form id="checkout-form" action="/cart/checkout" method="post">
+            <input type="hidden" name="restaurantId" id="restaurantId">
+            <div id="hidden-items"></div>
+            <button type="submit" class="btn-order" disabled>Đặt hàng</button>
         </form>
     </div>
 </div>
+
+<!-- LỊCH SỬ ĐƠN HÀNG -->
+<div class="history" th:if="${!#lists.isEmpty(orders)}">
+    <h2>Lịch sử đơn hàng</h2>
+    <div th:each="order : ${orders}" class="order-card">
+        <div class="order-header">
+            <div>Mã: <span th:text="${order.id}"></span> | Nhà hàng: <span th:text="${order.restaurant.title}"></span></div>
+            <div class="status"
+                 th:classappend="${order.status == 0} ? 'status-pending' : ${order.status == 1} ? 'status-completed' : 'status-canceled'"
+                 th:text="${order.status == 0} ? 'Đang xử lý' : ${order.status == 1} ? 'Hoàn thành' : 'Đã hủy'"></div>
+        </div>
+        <table class="order-items">
+            <thead>
+            <tr>
+                <th>Món</th>
+                <th>SL</th>
+                <th>Giá</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.items}">
+                <td th:text="${item.food.title}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.food.price}"></td>
+                <td th:text="${item.price}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" style="text-align:right;">Tổng tiền:</td>
+                <td th:text="${order.totalPrice}"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    let cart = []; // khai báo cart toàn cục
+
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const foodId = btn.dataset.id;
+            const quantity = parseInt(btn.previousElementSibling.value);
+
+            fetch('/menu/add-to-cart', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `foodId=${foodId}&quantity=${quantity}`
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    cart = data.cart;
+                    updateCartUI(cart, data.restaurantId);
+                });
+        });
+    });
+
+    function updateCartUI(cart, restaurantId) {
+        const tbody = document.getElementById('cart-body');
+        const table = document.getElementById('cart-table');
+        const empty = document.getElementById('empty-cart');
+        const hiddenItems = document.getElementById('hidden-items');
+        const checkoutBtn = document.querySelector('.btn-order');
+
+        tbody.innerHTML = '';
+        hiddenItems.innerHTML = '';
+
+        if (cart.length === 0) {
+            table.style.display = 'none';
+            empty.style.display = 'block';
+            checkoutBtn.disabled = true;
+            document.getElementById('restaurantId').value = '';
+            return;
+        }
+
+        table.style.display = 'table';
+        empty.style.display = 'none';
+        checkoutBtn.disabled = false;
+
+        let total = 0;
+        cart.forEach(item => {
+            const subtotal = parseFloat(item.price) * item.quantity;
+            total += subtotal;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.foodName}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.price}</td>
+                            <td>${subtotal}</td>`;
+            tbody.appendChild(tr);
+
+            // Hidden inputs cho form checkout
+            const foodInput = document.createElement('input');
+            foodInput.type = 'hidden';
+            foodInput.name = 'foodIds';
+            foodInput.value = item.foodId;
+            hiddenItems.appendChild(foodInput);
+
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'hidden';
+            qtyInput.name = 'quantities';
+            qtyInput.value = item.quantity;
+            hiddenItems.appendChild(qtyInput);
+        });
+
+        document.getElementById('cart-total').innerText = total;
+        document.getElementById('restaurantId').value = restaurantId;
+    }
+
+    // Khởi tạo cart khi load trang (session cart)
+    window.addEventListener('load', () => {
+        const initialCart = /*[[${cartItems}]]*/ []; // Thymeleaf inject session cart
+        if (initialCart.length > 0) {
+            const restaurantId = initialCart[0].restaurantId;
+            cart = initialCart;
+            updateCartUI(cart, restaurantId);
+        }
+    });
+</script>
 
 </body>
 </html>
