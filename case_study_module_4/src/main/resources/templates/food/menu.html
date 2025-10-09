@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Thực đơn & Giỏ hàng</title>
-    <style>
-        body {
-            font-family: Inter, sans-serif;
-            background: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
+    <th:block th:replace="~{common/template::library}"></th:block>
 
+    <style>
         .container {
             display: flex;
             max-width: 1200px;
@@ -240,12 +235,13 @@
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(123, 44, 191, 0.3);
         }
-git a
     </style>
 </head>
-<body>
+<div th:replace="~{common/template::header}"></div>
 
+<body>
 <div class="container">
+
     <!-- MENU -->
     <div class="menu">
         <div class="card" th:each="menu : ${menuList}">
@@ -410,6 +406,8 @@ git a
         }
     });
 </script>
+<div th:replace="~{common/template::footer}"></div>
+
 
 </body>
 </html>
