@@ -274,8 +274,7 @@ git a
         </table>
         <div class="total">Tổng cộng: <span id="cart-total">0</span></div>
 <!-- Chỉ hiển thị với Admin -->
-
-
+        
         <a sec:authorize="hasAnyAuthority('ROLE_RESTAURANT_OWNER','ROLE_ADMIN')"
            th:href="@{/menu/add_food}"
            class="btn-add-new">
