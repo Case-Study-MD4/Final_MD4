@@ -61,8 +61,8 @@ public class SecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .failureUrl("/login?error=true")
-                        // ✅ luôn chuyển về trang lịch sử sau login, tránh lặp
-                        .defaultSuccessUrl("/menu", true)
+                        
+                        .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
