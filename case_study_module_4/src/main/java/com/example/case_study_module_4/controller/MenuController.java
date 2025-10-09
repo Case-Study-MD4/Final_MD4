@@ -194,8 +194,7 @@ public class MenuController {
         return "food/add_food";
     }
 
-    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
-    @PostMapping("/add_food")
+//    @PostMapping("/add_food")
     public String addFood(@ModelAttribute("food") Food food,
                           @RequestParam Long restaurantId,
                           BindingResult bindingResult,
