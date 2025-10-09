@@ -1,4 +1,5 @@
 package com.example.case_study_module_4.controller;
+
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.MenuRestaurant;
@@ -15,29 +16,23 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
 
-=======
->>>>>>> f50d4f65c668578eba81aed10319dc97ac4479d3
 @Controller
 @RequestMapping("/menu")
 @RequiredArgsConstructor
 public class MenuController {
-<<<<<<< HEAD
+
 
     private final IFoodRepository foodRepository;
     private final IRestaurantRepository restaurantRepository;
     private final IMenuRestaurantRepository menuRestaurantRepository;
 
-=======
-    private final IFoodRepository foodRepository;
-    private final IRestaurantRepository restaurantRepository;
-    private final IMenuRestaurantRepository menuRestaurantRepository;
->>>>>>> f50d4f65c668578eba81aed10319dc97ac4479d3
+
     @GetMapping
     public String showMenu(Model model, HttpSession session) {
         List<MenuRestaurant> menuList = menuRestaurantRepository.findAll();
@@ -52,6 +47,7 @@ public class MenuController {
         model.addAttribute("total", total);
         return "food/menu";
     }
+
     // :white_check_mark: Thêm món vào giỏ hàng
     @PostMapping("/add-to-cart")
     @ResponseBody
@@ -92,13 +88,15 @@ public class MenuController {
                 "restaurantId", restaurant.getId()
         );
     }
-    //    @GetMapping("/add_food")
+
+    @GetMapping("/add_food")
     public String addFoodForm(Model model) {
         model.addAttribute("food", new Food());
         model.addAttribute("restaurants", restaurantRepository.findAll());
         return "food/add_food";
     }
-    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
+
+    //    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
     @PostMapping("/add_food")
     public String addFood(@ModelAttribute("food") Food food,
                           @RequestParam Long restaurantId,
