@@ -140,23 +140,23 @@ public class MenuController {
     // ✅ Thêm món vào giỏ hàng
     @PostMapping("/add-to-cart")
     @ResponseBody
-    public Object addToCartAjax(@RequestParam Long foodId,
-                                @RequestParam(defaultValue = "1") int quantity,
-                                HttpSession session) {
+    public Map<String, Object> addToCart(@RequestParam Long foodId,
+                                         @RequestParam(defaultValue = "1") int quantity,
+                                         HttpSession session) {
+
         List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
         if (cart == null) cart = new ArrayList<>();
 
-        // Lấy food và restaurant
+        // Lấy món ăn
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn"));
 
-        List<MenuRestaurant> menuList = menuRestaurantRepository.findAllByFoodId(foodId);
-        if (menuList.isEmpty()) {
-            throw new RuntimeException("Món chưa được gán nhà hàng nào!");
+        // ✅ Lấy nhà hàng từ món
+        Restaurant restaurant = food.getRestaurant();
+        if (restaurant == null) {
+            throw new RuntimeException("Món ăn chưa có nhà hàng liên kết!");
         }
-        Long restaurantId = menuList.get(0).getRestaurant().getId();
 
-        // Kiểm tra món đã tồn tại trong giỏ chưa
         boolean found = false;
         for (CartItemDto item : cart) {
             if (item.getFoodId().equals(foodId)) {
@@ -167,15 +167,21 @@ public class MenuController {
         }
 
         if (!found) {
-            cart.add(new CartItemDto(foodId, food.getTitle(), food.getPrice(), quantity, restaurantId));
+            CartItemDto newItem = new CartItemDto();
+            newItem.setFoodId(foodId);
+            newItem.setFoodName(food.getTitle());
+            newItem.setPrice(BigDecimal.valueOf(food.getPrice()));
+            newItem.setQuantity(quantity);
+            newItem.setRestaurantId(restaurant.getId());
+            cart.add(newItem);
         }
 
         session.setAttribute("cart", cart);
 
-        // Trả về cart + restaurantId
         return Map.of(
+                "success", true,
                 "cart", cart,
-                "restaurantId", restaurantId
+                "restaurantId", restaurant.getId()
         );
     }
 

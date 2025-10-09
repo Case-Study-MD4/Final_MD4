@@ -18,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,18 +54,13 @@ public class CartController {
             }
         }
 
-<<<<<<< HEAD
         Map<String, Object> resp = new HashMap<>();
         resp.put("cart", cart);
         resp.put("restaurantId", restaurantId);
 
         return resp;
-=======
-
-        cartService.addToCart(food, quantity);
-        return "redirect:/cart";
->>>>>>> cc5720208c64b22bf58b6fa0335e2226cb843651
     }
+
 
 
     @GetMapping
