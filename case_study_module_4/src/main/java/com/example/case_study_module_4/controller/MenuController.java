@@ -19,13 +19,25 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+
+=======
+>>>>>>> f50d4f65c668578eba81aed10319dc97ac4479d3
 @Controller
 @RequestMapping("/menu")
 @RequiredArgsConstructor
 public class MenuController {
+<<<<<<< HEAD
+
     private final IFoodRepository foodRepository;
     private final IRestaurantRepository restaurantRepository;
     private final IMenuRestaurantRepository menuRestaurantRepository;
+
+=======
+    private final IFoodRepository foodRepository;
+    private final IRestaurantRepository restaurantRepository;
+    private final IMenuRestaurantRepository menuRestaurantRepository;
+>>>>>>> f50d4f65c668578eba81aed10319dc97ac4479d3
     @GetMapping
     public String showMenu(Model model, HttpSession session) {
         List<MenuRestaurant> menuList = menuRestaurantRepository.findAll();
