@@ -1,10 +1,10 @@
 package com.example.case_study_module_4.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.metamodel.IdentifiableType;
 import lombok.*;
 
-import java.math.BigDecimal;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,5 +26,15 @@ public class Food {
     @JoinColumn(name = "cate_id", referencedColumnName = "id")
     private Categories categories;
 
-}
+    // Liên kết với MenuRestaurant
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private Set<MenuRestaurant> menuRestaurants;
 
+    // Lấy Restaurant chính (ví dụ món ăn chỉ gắn 1 nhà hàng)
+    public Restaurant getRestaurant() {
+        if (menuRestaurants != null && !menuRestaurants.isEmpty()) {
+            return menuRestaurants.iterator().next().getRestaurant();
+        }
+        return null;
+    }
+}
