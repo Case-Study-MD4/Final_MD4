@@ -3,6 +3,7 @@ package com.example.case_study_module_4.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,8 +35,11 @@ public class Restaurant {
     @Column(name = "open_date")
     private LocalDateTime openDate;
 
-
-//    @OneToOne
-//    @JoinColumn(name = "owner_account_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_restaurant_owner"))
-//    private Account ownerAccount;
+    @ManyToMany
+    @JoinTable(
+            name = "menu_restaurant",
+            joinColumns = @JoinColumn(name = "res_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_id")
+    )
+    private List<Food> foods;
 }

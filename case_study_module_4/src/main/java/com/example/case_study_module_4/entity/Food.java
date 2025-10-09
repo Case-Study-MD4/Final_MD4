@@ -3,6 +3,7 @@ package com.example.case_study_module_4.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,6 +27,8 @@ public class Food {
     @JoinColumn(name = "cate_id", referencedColumnName = "id")
     private Categories categories;
 
+    @ManyToMany(mappedBy = "foods")
+    private List<Restaurant> restaurants;
     // Liên kết với MenuRestaurant
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private Set<MenuRestaurant> menuRestaurants;
