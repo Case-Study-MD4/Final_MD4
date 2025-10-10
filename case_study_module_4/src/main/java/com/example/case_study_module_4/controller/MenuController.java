@@ -27,7 +27,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MenuController {
 
-
+    private final IMenuRestaurantRepository menuRestaurantRepository;
+    private final IFoodRepository foodRepository;
+    private final IRestaurantRepository restaurantRepository;
     @GetMapping
     public String showMenu(Model model, HttpSession session) {
         List<MenuRestaurant> menuList = menuRestaurantRepository.findAll();
