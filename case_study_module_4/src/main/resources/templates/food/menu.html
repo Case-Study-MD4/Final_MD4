@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Thực đơn & Giỏ hàng</title>
     <th:block th:replace="~{common/template::library}"></th:block>
-
     <style>
         .container {
             display: flex;
@@ -12,7 +11,6 @@
             margin: 20px auto;
             gap: 20px;
         }
-
         /* ===== MENU ===== */
         .menu {
             flex: 2;
@@ -20,7 +18,6 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
         }
-
         .card {
             background: #fff;
             border-radius: 12px;
@@ -31,12 +28,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
-
         .card img {
             width: 100%;
             height: 150px;
@@ -44,21 +39,18 @@
             border-radius: 8px;
             margin-bottom: 10px;
         }
-
         .card h3 {
             font-size: 16px;
             margin: 5px 0;
             color: #333;
             text-align: center;
         }
-
         .price {
-            color: #e74c3c;
+            color: #E74C3C;
             font-weight: 700;
             margin-bottom: 8px;
             font-size: 15px;
         }
-
         .card input {
             width: 60px;
             text-align: center;
@@ -67,11 +59,10 @@
             padding: 3px 0;
             margin-bottom: 5px;
         }
-
         .card button {
             width: 100%;
             padding: 6px 0;
-            background: #e74c3c;
+            background: #E74C3C;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -79,15 +70,13 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-
         .card button:hover {
-            background: #d35400;
+            background: #D35400;
         }
-
         /* ===== CART ===== */
         .cart {
             flex: 1;
-            background: #ffffff;
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -97,7 +86,6 @@
             position: sticky;
             top: 20px;
         }
-
         .cart h2 {
             font-size: 20px;
             font-weight: 600;
@@ -105,49 +93,42 @@
             text-align: center;
             margin-bottom: 10px;
         }
-
         #empty-cart {
             text-align: center;
             color: #888;
             font-style: italic;
             padding: 15px 0;
         }
-
         #cart-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
             font-size: 14px;
         }
-
         #cart-table th, #cart-table td {
             padding: 8px;
             text-align: center;
             border-bottom: 1px solid #eee;
         }
-
         #cart-table th {
-            background: #fafafa;
+            background: #FAFAFA;
             font-weight: 600;
             color: #555;
         }
-
         #cart-table tbody tr:hover {
-            background: #f9f9f9;
+            background: #F9F9F9;
         }
-
         .total {
             text-align: right;
             font-size: 16px;
             font-weight: 600;
-            color: #e74c3c;
+            color: #E74C3C;
             margin-top: 10px;
         }
-
         .btn-order {
             width: 100%;
             padding: 10px;
-            background: #e74c3c;
+            background: #E74C3C;
             color: white;
             font-size: 16px;
             font-weight: 600;
@@ -156,22 +137,18 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .btn-order:hover:not(:disabled) {
-            background: #d35400;
+            background: #D35400;
         }
-
         .btn-order:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
-
         /* ===== Lịch sử đơn hàng ===== */
         .history {
             margin: 20px auto;
             max-width: 1200px;
         }
-
         .order-card {
             background: white;
             border-radius: 12px;
@@ -179,69 +156,59 @@
             margin-bottom: 15px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
-
         .order-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-
         .order-items {
             width: 100%;
             border-collapse: collapse;
         }
-
         .order-items th, .order-items td {
             border: 1px solid #ccc;
             padding: 5px;
             text-align: center;
         }
-
         .status {
             padding: 2px 6px;
             border-radius: 4px;
             color: white;
             font-size: 12px;
         }
-
         .status-pending {
-            background: #f39c12;
+            background: #F39C12;
         }
-
         .status-completed {
-            background: #27ae60;
+            background: #27AE60;
         }
-
         .status-canceled {
-            background: #c0392b;
+            background: #C0392B;
         }
         .btn-add-new {
             display: inline-block;
             text-align: center;
-            background: #f8f1ff;
-            color: #7b2cbf;
+            background: #F8F1FF;
+            color: #7B2CBF;
             font-weight: 600;
             padding: 10px 0;
             border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s ease;
-            border: 2px dashed #c77dff;
+            border: 2px dashed #C77DFF;
         }
-
         .btn-add-new:hover {
-            background: #7b2cbf;
+            background: #7B2CBF;
             color: white;
-            border-color: #7b2cbf;
+            border-color: #7B2CBF;
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(123, 44, 191, 0.3);
         }
     </style>
 </head>
 <div th:replace="~{common/template::header}"></div>
-
 <body>
 <div class="container">
-
     <!-- MENU -->
     <div class="menu">
         <div class="card" th:each="menu : ${menuList}">
@@ -252,10 +219,9 @@
             <button type="button" class="add-to-cart" th:data-id="${menu.food.id}">Thêm vào giỏ</button>
         </div>
     </div>
-
     <!-- GIỎ HÀNG -->
     <div class="cart">
-        <h2>🛒 Giỏ hàng</h2>
+        <h2>Giỏ hàng</h2>
         <div id="empty-cart">Giỏ hàng trống</div>
         <table id="cart-table" style="display:none;">
             <thead>
@@ -269,15 +235,12 @@
             <tbody id="cart-body"></tbody>
         </table>
         <div class="total">Tổng cộng: <span id="cart-total">0</span></div>
-<!-- Chỉ hiển thị với Admin -->
-
+        <!-- Chỉ hiển thị với Admin -->
         <a sec:authorize="hasAnyAuthority('ROLE_RESTAURANT_OWNER','ROLE_ADMIN')"
            th:href="@{/menu/add_food}"
            class="btn-add-new">
             <i class="fa-solid fa-plus me-1"></i> Thêm món mới
         </a>
-
-
         <form id="checkout-form" action="/cart/checkout" method="post">
             <input type="hidden" name="restaurantId" id="restaurantId">
             <div id="hidden-items"></div>
@@ -285,7 +248,6 @@
         </form>
     </div>
 </div>
-
 <!-- LỊCH SỬ ĐƠN HÀNG -->
 <div class="history" th:if="${!#lists.isEmpty(orders)}">
     <h2>Lịch sử đơn hàng</h2>
@@ -322,15 +284,12 @@
         </table>
     </div>
 </div>
-
 <script>
     let cart = []; // khai báo cart toàn cục
-
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', () => {
             const foodId = btn.dataset.id;
             const quantity = parseInt(btn.previousElementSibling.value);
-
             fetch('/cart/add-to-cart', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -343,17 +302,14 @@
                 });
         });
     });
-
     function updateCartUI(cart, restaurantId) {
         const tbody = document.getElementById('cart-body');
         const table = document.getElementById('cart-table');
         const empty = document.getElementById('empty-cart');
         const hiddenItems = document.getElementById('hidden-items');
         const checkoutBtn = document.querySelector('.btn-order');
-
         tbody.innerHTML = '';
         hiddenItems.innerHTML = '';
-
         if (cart.length === 0) {
             table.style.display = 'none';
             empty.style.display = 'block';
@@ -361,41 +317,34 @@
             document.getElementById('restaurantId').value = '';
             return;
         }
-
         table.style.display = 'table';
         empty.style.display = 'none';
         checkoutBtn.disabled = false;
-
         let total = 0;
         cart.forEach(item => {
             const subtotal = parseFloat(item.price) * item.quantity;
             total += subtotal;
-
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${item.foodName}</td>
                             <td>${item.quantity}</td>
                             <td>${item.price}</td>
                             <td>${subtotal}</td>`;
             tbody.appendChild(tr);
-
             // Hidden inputs cho form checkout
             const foodInput = document.createElement('input');
             foodInput.type = 'hidden';
             foodInput.name = 'foodIds';
             foodInput.value = item.foodId;
             hiddenItems.appendChild(foodInput);
-
             const qtyInput = document.createElement('input');
             qtyInput.type = 'hidden';
             qtyInput.name = 'quantities';
             qtyInput.value = item.quantity;
             hiddenItems.appendChild(qtyInput);
         });
-
         document.getElementById('cart-total').innerText = total;
         document.getElementById('restaurantId').value = restaurantId;
     }
-
     // Khởi tạo cart khi load trang (session cart)
     window.addEventListener('load', () => {
         const initialCart = /*[[${cartItems}]]*/ []; // Thymeleaf inject session cart
@@ -407,7 +356,14 @@
     });
 </script>
 <div th:replace="~{common/template::footer}"></div>
-
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+
