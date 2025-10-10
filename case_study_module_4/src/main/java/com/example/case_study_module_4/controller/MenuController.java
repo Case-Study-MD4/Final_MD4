@@ -26,7 +26,7 @@ import java.util.Map;
 @RequestMapping("/menu")
 @RequiredArgsConstructor
 public class MenuController {
-    
+
     private final IFoodRepository foodRepository;
     private final IRestaurantRepository restaurantRepository;
     private final IMenuRestaurantRepository menuRestaurantRepository;
