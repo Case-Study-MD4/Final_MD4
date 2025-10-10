@@ -28,11 +28,6 @@ import java.util.Map;
 public class MenuController {
 
 
-    private final IFoodRepository foodRepository;
-    private final IRestaurantRepository restaurantRepository;
-    private final IMenuRestaurantRepository menuRestaurantRepository;
-
-
     @GetMapping
     public String showMenu(Model model, HttpSession session) {
         List<MenuRestaurant> menuList = menuRestaurantRepository.findAll();
@@ -88,15 +83,13 @@ public class MenuController {
                 "restaurantId", restaurant.getId()
         );
     }
-
     @GetMapping("/add_food")
     public String addFoodForm(Model model) {
         model.addAttribute("food", new Food());
         model.addAttribute("restaurants", restaurantRepository.findAll());
         return "food/add_food";
     }
-
-    //    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
+//    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
     @PostMapping("/add_food")
     public String addFood(@ModelAttribute("food") Food food,
                           @RequestParam Long restaurantId,
