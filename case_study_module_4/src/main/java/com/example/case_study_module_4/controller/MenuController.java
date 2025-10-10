@@ -1,4 +1,5 @@
 package com.example.case_study_module_4.controller;
+
 import com.example.case_study_module_4.dto.CartItemDto;
 import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.MenuRestaurant;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MenuController {
 
-    private final IFoodRepository foodRepository;
-    private final IRestaurantRepository restaurantRepository;
-    private final IMenuRestaurantRepository menuRestaurantRepository;
 
     @GetMapping
     public String showMenu(Model model, HttpSession session) {
@@ -43,6 +42,7 @@ public class MenuController {
         model.addAttribute("total", total);
         return "food/menu";
     }
+
     // :white_check_mark: Thêm món vào giỏ hàng
     @PostMapping("/add-to-cart")
     @ResponseBody
