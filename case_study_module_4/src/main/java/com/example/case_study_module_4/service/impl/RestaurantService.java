@@ -101,5 +101,5 @@ public class RestaurantService implements IRestaurantService {
     public long countActive() {
         return restaurantRepository.count();
     }
-    
+
 }
