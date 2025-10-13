@@ -1,25 +1,27 @@
 package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.service.IFoodService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
+@RequestMapping("/foods") // ✅ tất cả URL liên quan tới khách hàng
 public class FoodController {
 
-    @Autowired
-    private IFoodService foodService;
+    private final IFoodService foodService;
 
-
-    @GetMapping("/foods")
+    // Danh sách món ăn cho khách hàng
+    @GetMapping
     public String showFoodTop(Model model) {
         model.addAttribute("foods", foodService.findAll());
         return "home/home";
     }
-    @GetMapping("/food/{id}")
+
+    // Chi tiết món ăn
+    @GetMapping("/{id}")
     public String showFoodDetail(@PathVariable Long id, Model model) {
         var food = foodService.findById(id);
         if (food == null) {
@@ -28,5 +30,4 @@ public class FoodController {
         model.addAttribute("food", food);
         return "food/detail";
     }
-
 }

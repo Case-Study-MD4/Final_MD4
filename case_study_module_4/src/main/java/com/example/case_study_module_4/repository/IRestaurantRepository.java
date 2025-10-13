@@ -12,4 +12,6 @@ public interface IRestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findTop8ByOrderByIdDesc();
     @Query("SELECT r FROM Restaurant r WHERE LOWER(r.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Restaurant> searchByTitle(String keyword);
+
+    Restaurant findByAccountId(Long accountId);
 }

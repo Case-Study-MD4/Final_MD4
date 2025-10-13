@@ -42,4 +42,9 @@ public class RestaurantService implements IRestaurantService {
     public List<Restaurant> searchByTitle(String keyword) {
         return restaurantRepository.searchByTitle(keyword);
     }
+
+    @Override
+    public Restaurant findByAccountId(Long accountId) {
+        return restaurantRepository.findByAccountId(accountId);
+    }
 }
