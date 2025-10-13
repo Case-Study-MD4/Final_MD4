@@ -14,6 +14,7 @@ public interface IRestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("SELECT r FROM Restaurant r WHERE LOWER(r.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Restaurant> searchByTitle(String keyword);
 
+    Restaurant findByAccountId(Long accountId);
     @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o")
     BigDecimal getTotalRevenue();
 

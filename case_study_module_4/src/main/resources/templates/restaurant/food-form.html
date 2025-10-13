@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${food.id != null} ? 'Chỉnh sửa món ăn' : 'Thêm món mới'"></title>
+  <th:block th:replace="~{common/template::library}"></th:block>
+</head>
+<body>
+<div th:replace="~{common/template::headerRestaurant}"></div>
+
+<div class="container py-4">
+  <h2 class="mb-4" th:text="${food.id != null} ? '✏️ Chỉnh sửa món ăn' : '➕ Thêm món mới'"></h2>
+
+  <!-- 🔧 Quan trọng: sử dụng biến 'action' được truyền từ controller -->
+  <form th:action="@{${action}}" th:object="${food}" method="post" enctype="multipart/form-data"
+        class="needs-validation" novalidate>
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <!-- Tên món -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Tên món ăn</label>
+      <input type="text" th:field="*{title}" id="title" class="form-control"
+             placeholder="Nhập tên món ăn" required>
+      <div class="invalid-feedback">Vui lòng nhập tên món ăn.</div>
+    </div>
+
+    <!-- Giá -->
+    <div class="mb-3">
+      <label for="price" class="form-label">Giá (VNĐ)</label>
+      <input type="number" step="0.01" th:field="*{price}" id="price" class="form-control"
+             placeholder="Nhập giá món ăn" required>
+      <div class="invalid-feedback">Vui lòng nhập giá hợp lệ.</div>
+    </div>
+
+    <!-- Thời gian giao -->
+    <div class="mb-3">
+      <label for="timeShip" class="form-label">Thời gian giao (phút)</label>
+      <input type="text" th:field="*{timeShip}" id="timeShip" class="form-control"
+             placeholder="VD: 30 phút" required>
+      <div class="invalid-feedback">Vui lòng nhập thời gian giao hàng.</div>
+    </div>
+
+    <!-- Danh mục -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Danh mục</label>
+      <select name="categoryId" id="category" class="form-select" required>
+        <option value="">-- Chọn danh mục --</option>
+        <option th:each="cate : ${categories}"
+                th:value="${cate.id}"
+                th:text="${cate.nameCate}"
+                th:selected="${food.categories != null and food.categories.id == cate.id}">
+        </option>
+      </select>
+      <div class="invalid-feedback">Vui lòng chọn danh mục.</div>
+    </div>
+
+    <!-- Ảnh -->
+    <div class="mb-3">
+      <label for="image" class="form-label">Ảnh món ăn</label>
+      <input type="file" id="image" name="imageFile" class="form-control">
+      <div class="form-text">Để trống nếu không thay đổi ảnh.</div>
+
+      <div th:if="${food.image != null}" class="mt-2">
+        <p>Ảnh hiện tại:</p>
+        <img th:src="@{'/uploads/' + ${food.image}}" alt="Ảnh món"
+             class="img-thumbnail" style="max-width: 200px;">
+      </div>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="text-end">
+      <a th:href="@{/restaurant/foods}" class="btn btn-secondary">⬅ Quay lại</a>
+      <button type="submit" class="btn btn-primary">💾 Lưu món ăn</button>
+    </div>
+  </form>
+</div>
+
+<div th:replace="~{common/template::footer}"></div>
+
+<script>
+  // Bootstrap form validation
+  (() => {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>
+
+</body>
+</html>
