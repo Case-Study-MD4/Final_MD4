@@ -28,5 +28,4 @@ public class FoodController {
         model.addAttribute("food", food);
         return "food/detail";
     }
-
 }
