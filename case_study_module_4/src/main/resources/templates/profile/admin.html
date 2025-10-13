@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm bg-primary text-white text-center p-3">
                 <h5>Tổng doanh thu</h5>
-                <h3 th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</h3>
+                <h3 th:text="${#numbers.formatDecimal(totalRevenue * 0.1, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</h3>
             </div>
         </div>
 
