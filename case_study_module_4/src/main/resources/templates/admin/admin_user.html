@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/admin_layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Người dùng</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold mb-0">
+                <i class="fa-solid fa-users me-2"></i>Quản lý Người dùng
+            </h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Họ tên</th>
+                    <th>Vai trò</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.account.username}"></td>
+                    <td th:text="${user.fullname}"></td>
+                    <td th:text="${user.account.role.roleName}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.address}"></td>
+                    <td class="text-center">
+                        <a th:href="@{'/admin/user/view/' + ${user.id}}" class="btn btn-sm btn-info me-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        <a th:href="@{'/admin/user/edit/' + ${user.id}}" class="btn btn-sm btn-warning me-1">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <a th:href="@{'/admin/user/delete/' + ${user.id}}" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Bạn có chắc muốn xóa người dùng này không?');">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

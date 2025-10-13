@@ -1,6 +1,6 @@
 package com.example.case_study_module_4.entity;
 
-import com.example.case_study_module_4.common.OrderStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,6 +39,5 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
-
 }
 
