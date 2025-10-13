@@ -58,6 +58,29 @@
             object-fit: cover;
             margin-bottom: 10px;
         }
+        #cart-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-container {
+            background: white;
+            border-radius: 16px;
+            text-align: center;
+            padding: 30px 40px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            animation: popupFadeIn 0.4s ease;
+        }
+
+        @keyframes popupFadeIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 
@@ -85,30 +108,97 @@
         </div>
     </div>
 
-    <!-- ===== MENU FOODS ===== -->
-    <h4 class="mt-4 mb-3">🍛 Danh sách món ăn</h4>
-    <div class="row">
-        <div class="col-md-3 mb-4" th:each="food : ${foods}">
-            <div class="product-card">
-                <a th:href="@{'/food/' + ${food.id}}">
-                    <img th:src="${food.image}" alt="food-image">
-                </a>
-                <h5>
-                    <a th:href="@{'/food/' + ${food.id}}" class="text-dark text-decoration-none" th:text="${food.title}">Tên món</a>
-                </h5>
-                <p class="mb-2">
-          <span class="text-danger fw-bold"
-                th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                </p>
-                <button class="btn btn-outline-danger w-100 mt-auto">
-                    <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+    <!-- ===== FOODS ===== -->
+    <section class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>🍛 Món ăn phổ biến</h4>
+            <a th:href="@{/foods}" class="text-danger text-decoration-none fw-semibold">
+                Xem thêm <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 mb-4" th:each="food : ${foods}">
+                <div class="product-card">
+                    <a th:href="@{'/foods/' + ${food.id}}">
+                        <img th:src="@{${food.image}}" alt="food-image">
+                    </a>
+                    <h5>
+                        <a th:href="@{'/foods/' + ${food.id}}" class="text-dark text-decoration-none"
+                           th:text="${food.title}">Tên món</a>
+                    </h5>
+                    <p>
+                    <span class="text-danger fw-bold"
+                          th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                    </p>
+
+                    <!-- ✅ Form AJAX thêm vào giỏ -->
+                    <form onsubmit="addToCart(event)" class="w-100">
+                        <input type="hidden" name="foodId" th:value="${food.id}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ✅ Popup overlay giống trang chi tiết -->
+    <div id="cart-popup-overlay">
+        <div class="popup-container text-center bg-white p-4 rounded-4 shadow">
+            <i class="fa-solid fa-circle-check popup-icon text-success fs-1 mb-2"></i>
+            <h4 class="popup-title mb-2">Đã thêm vào giỏ hàng!</h4>
+            <p class="popup-desc mb-3">Sản phẩm của bạn đã được thêm vào giỏ hàng thành công 🎉</p>
+            <div class="popup-buttons d-flex flex-column gap-2">
+                <a href="/menu" class="btn btn-danger"><i class="fa-solid fa-cart-shopping me-2"></i>Xem giỏ hàng</a>
+                <button type="button" class="btn btn-outline-secondary" onclick="closePopup()">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Tiếp tục mua sắm
                 </button>
             </div>
         </div>
     </div>
-</div>
 
 <!-- ===== FOOTER ===== -->
 <div th:replace="~{common/template::footer}"></div>
 </body>
+<script>
+    async function addToCart(event) {
+        event.preventDefault();
+        const form = event.target;
+        const foodId = form.querySelector('[name="foodId"]').value;
+        const quantity = form.querySelector('[name="quantity"]').value;
+
+        try {
+            const res = await fetch('/menu/add-to-cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ foodId, quantity })
+            });
+
+            const data = await res.json();
+
+            // ✅ Cập nhật icon giỏ hàng nếu có
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) cartCount.textContent = data.cart.length;
+
+            // ✅ Hiện popup
+            showCartPopup();
+
+        } catch (error) {
+            console.error('Lỗi khi thêm vào giỏ:', error);
+            alert("Không thể thêm vào giỏ hàng!");
+        }
+    }
+
+    function showCartPopup() {
+        document.getElementById('cart-popup-overlay').style.display = 'flex';
+        setTimeout(closePopup, 2500);
+    }
+
+    function closePopup() {
+        document.getElementById('cart-popup-overlay').style.display = 'none';
+    }
+</script>
 </html>

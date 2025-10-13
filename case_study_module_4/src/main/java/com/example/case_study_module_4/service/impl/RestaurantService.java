@@ -59,6 +59,7 @@ public class RestaurantService implements IRestaurantService {
     @Override
     public Restaurant findByAccountId(Long accountId) {
         return restaurantRepository.findByAccountId(accountId);
+    }
     @Transactional
     @Override
     public void deleteRestaurantAndFoods(Long id) {
