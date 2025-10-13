@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -34,6 +36,11 @@ public class UserService implements IUserService {
     public User findByUsername(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy user với username=" + username));
+    }
+
+    @Override
+    public List<User> findAll() {
+       return repository.findAll();
     }
 
 }

@@ -10,4 +10,6 @@ public interface IRestaurantService {
     Restaurant save(Restaurant restaurant);
     void delete(Long id);
     List<Restaurant> searchByTitle(String keyword);
+
+    void deleteRestaurantAndFoods(Long id);
 }

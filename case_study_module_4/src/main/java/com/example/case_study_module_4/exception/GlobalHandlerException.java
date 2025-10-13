@@ -19,4 +19,12 @@ public class GlobalHandlerException {
         error.put("message", "Không tìm thấy người dùng.");
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleRestaurantNotFound(RestaurantNotFoundException ex){
+        Map<String, Object> error = new HashMap<>();
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        error.put("error", "ID không hợp lệ");
+        error.put("message", "Không tìm thấy nhà hàng.");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

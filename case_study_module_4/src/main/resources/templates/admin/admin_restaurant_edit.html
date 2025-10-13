@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/admin_layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa Nhà hàng</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="card shadow-lg p-4">
+        <h4 class="fw-bold mb-3">Cập nhật thông tin Nhà hàng</h4>
+
+        <form th:action="@{/profile/admin/restaurant/update}" th:object="${restaurant}" method="post">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label class="form-label">Tên nhà hàng</label>
+                <input type="text" th:field="*{title}" class="form-control" required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả ngắn</label>
+                <input type="text" th:field="*{subtitle}" class="form-control"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giới thiệu chi tiết</label>
+                <textarea th:field="*{description}" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ảnh đại diện (URL)</label>
+                <input type="text" th:field="*{image}" class="form-control"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ</label>
+                <input type="text" th:field="*{address}" class="form-control"/>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" th:field="*{isFreeship}" id="freeshipCheck">
+                <label class="form-check-label" for="freeshipCheck">Miễn phí giao hàng</label>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                <a th:href="@{/profile/admin/restaurants}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
