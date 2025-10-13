@@ -1,5 +1,6 @@
 package com.example.case_study_module_4.repository;
 
+import com.example.case_study_module_4.dto.RevenueDto;
 import com.example.case_study_module_4.entity.Order;
 import com.example.case_study_module_4.entity.User;
 import jakarta.transaction.Transactional;
@@ -27,5 +28,23 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.restaurant.id = :restaurantId")
     List<Order> findByRestaurantId(Long restaurantId);
 
+    List<Order> findAllByRestaurantId(Long restaurantId);
+
+    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.restaurant.id = :restaurantId")
+    Double getTotalRevenueByRestaurant(@Param("restaurantId") Long restaurantId);
+
+    @Query("""
+    SELECT new com.example.case_study_module_4.dto.RevenueDto(
+        r.title,
+        COUNT(o.id),
+        SUM(o.totalPrice)
+    )
+    FROM Order o
+    JOIN o.restaurant r
+    WHERE o.status = 0
+    GROUP BY r.title
+    ORDER BY SUM(o.totalPrice) DESC
+""")
+    List<RevenueDto> getRevenueStatistics();
 }
 

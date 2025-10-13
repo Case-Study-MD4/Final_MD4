@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/admin_layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Nhà hàng</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="card shadow-lg">
+        <div class="card-header bg-dark text-white">
+            <h4 th:text="'Thông tin chi tiết - ' + ${restaurant.title}"></h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <img th:src="${restaurant.image}" class="img-fluid rounded border" alt="Ảnh nhà hàng">
+                </div>
+                <div class="col-md-7">
+                    <h5 th:text="${restaurant.title}"></h5>
+                    <p><strong>Mô tả ngắn:</strong> <span th:text="${restaurant.subtitle}"></span></p>
+                    <p><strong>Giới thiệu:</strong> <span th:text="${restaurant.description}"></span></p>
+                    <p><strong>Địa chỉ:</strong> <span th:text="${restaurant.address}"></span></p>
+                    <p><strong>Freeship:</strong>
+                        <span th:text="${restaurant.isFreeship ? 'Có' : 'Không'}"></span>
+                    </p>
+                    <p><strong>Ngày mở:</strong>
+                        <span th:text="${#temporals.format(restaurant.openDate, 'dd/MM/yyyy HH:mm')}"></span>
+                    </p>
+
+                    <div class="mt-3 text-end">
+                        <a th:href="@{'/profile/admin/restaurant/edit/' + ${restaurant.id}}" class="btn btn-warning me-2">Sửa</a>
+                        <a th:href="@{/profile/admin/restaurants}" class="btn btn-secondary">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,4 @@
 package com.example.case_study_module_4.controller;
-
-import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.entity.User;
 import com.example.case_study_module_4.service.*;
@@ -8,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.example.case_study_module_4.service.IRestaurantService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

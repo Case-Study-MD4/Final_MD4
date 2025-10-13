@@ -1,0 +1,60 @@
+<!-- admin_restaurant.html -->
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/admin_layout}">
+
+    <div layout:fragment="content">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="fw-bold mb-0">
+                    <i class="fa-solid fa-utensils me-2"></i>Quản lý Nhà hàng
+                </h3>
+                <a class="btn btn-primary" th:href="@{/profile/admin/restaurant/add}">
+                    <i class="fa-solid fa-plus me-1"></i> Thêm mới
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên nhà hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Ngày mở</th>
+                        <th>Freeship</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="res : ${restaurants}">
+                        <td th:text="${res.id}"></td>
+                        <td th:text="${res.title}"></td>
+                        <td th:text="${res.address}"></td>
+                        <td th:text="${#temporals.format(res.openDate, 'dd/MM/yyyy')}"></td>
+                        <td>
+                          <span th:text="${res.isFreeship ? 'Có' : 'Không'}"
+                                th:classappend="${res.isFreeship} ? 'text-success fw-semibold' : 'text-danger fw-semibold'"></span>
+                        </td>
+                        <td class="text-center">
+                            <a th:href="@{'/profile/admin/restaurant/view/' + ${res.id}}"
+                               class="btn btn-sm btn-info me-1">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a th:href="@{'/profile/admin/restaurant/edit/' + ${res.id}}"
+                               class="btn btn-sm btn-warning me-1">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a th:href="@{'/profile/admin/restaurant/delete/' + ${res.id}}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Bạn có chắc muốn xóa nhà hàng này không?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,4 +12,5 @@ public interface IRestaurantService {
     List<Restaurant> searchByTitle(String keyword);
 
     Restaurant findByAccountId(Long accountId);
+    void deleteRestaurantAndFoods(Long id);
 }

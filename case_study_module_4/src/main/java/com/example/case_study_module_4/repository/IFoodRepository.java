@@ -16,5 +16,7 @@ public interface IFoodRepository extends JpaRepository<Food, Long> {
 
     @Query("SELECT f FROM Food f JOIN f.menuRestaurants mr WHERE mr.restaurant.id = :restaurantId")
     List<Food> findByRestaurantId(@Param("restaurantId") Long restaurantId);
+    @Query("SELECT f FROM Food f ORDER BY f.id DESC")
+    List<Food> findTop5NewestFoods();
 
 }

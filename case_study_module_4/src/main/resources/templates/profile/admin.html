@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/admin_layout}">
+
+<head>
+    <title>Tổng quan</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <h2 class="fw-bold mb-4">📊 Bảng điều khiển quản trị</h2>
+
+    <!-- Thống kê nhanh -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-primary text-white text-center p-3">
+                <h5>Tổng doanh thu</h5>
+                <h3 th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-success text-white text-center p-3">
+                <h5>Số lượng nhà hàng</h5>
+                <h3 th:text="${restaurantCount}">0</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-warning text-dark text-center p-3">
+                <h5>Người dùng mới</h5>
+                <h3 th:text="${newCustomers}">0</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách nhà hàng -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-semibold">🍽️ Danh sách nhà hàng</h4>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#restaurantModal">
+            <i class="fa-solid fa-plus"></i> Thêm nhà hàng
+        </button>
+    </div>
+
+    <table class="table table-hover align-middle shadow-sm bg-white">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên nhà hàng</th>
+            <th>Địa chỉ</th>
+            <th>Ngày mở</th>
+            <th>Freeship</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="res : ${restaurants}">
+            <td th:text="${res.id}">1</td>
+            <td th:text="${res.title}">Tên nhà hàng</td>
+            <td th:text="${res.address}">Địa chỉ</td>
+            <td th:text="${#temporals.format(res.openDate, 'dd/MM/yyyy')}">01/10/2025</td>
+            <td th:text="${res.isFreeship ? 'Có' : 'Không'}">Không</td>
+            <td>
+                <button class="btn btn-sm btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#restaurantModal"
+                        th:attr="
+                            data-id=${res.id},
+                            data-title=${res.title},
+                            data-address=${res.address},
+                            data-isFreeship=${res.isFreeship},
+                            data-openDate=${#temporals.format(res.openDate,'yyyy-MM-dd''T''HH:mm')}
+                        ">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- MODAL THÊM / SỬA NHÀ HÀNG -->
+    <div class="modal fade" id="restaurantModal" tabindex="-1" aria-labelledby="restaurantModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/profile/admin/restaurant/save}" th:object="${restaurant}" method="post">
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="restaurantModalLabel">Thêm / Sửa Nhà Hàng</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên nhà hàng</label>
+                            <input type="text" th:field="*{title}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ</label>
+                            <input type="text" th:field="*{address}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Freeship</label>
+                            <select th:field="*{isFreeship}" class="form-select">
+                                <option th:value="true">Có</option>
+                                <option th:value="false">Không</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày mở</label>
+                            <input type="datetime-local" th:field="*{openDate}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
