@@ -63,7 +63,16 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .failureUrl("/login?error=true")
 
-                        .defaultSuccessUrl("/home", true)
+                        .successHandler((request, response, authentication) -> {
+                            var authorities = authentication.getAuthorities();
+                            String redirectUrl = "/home";
+
+                            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_RESTAURANT_OWNER"))) {
+                                redirectUrl = "restaurant/dashboard";
+                            }
+
+                            response.sendRedirect(redirectUrl);
+                        })
                         .permitAll()
                 )
 

@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +28,13 @@ public class UserInfoUserDetails implements UserDetails {
         this.username = account.getUsername();
         this.password = account.getPassword();
 
-        String roleName = (account.getRole() != null) ? account.getRole().getRoleName() : "USER";
-        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
+        String roleName = "USER";
+        if (account.getRole() != null && account.getRole().getRoleName() != null) {
+            roleName = account.getRole().getRoleName().trim().toUpperCase();
+        }
+
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleName));
+
 
         if (profile != null) {
             this.userId = profile.getId();

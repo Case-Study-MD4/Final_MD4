@@ -42,4 +42,9 @@ public class Restaurant {
             inverseJoinColumns = @JoinColumn(name = "food_id")
     )
     private List<Food> foods;
+
+    // 🟢 Thêm liên kết đến Account (chủ nhà hàng)
+    @ManyToOne
+    @JoinColumn(name = "owner_account_id", referencedColumnName = "id")
+    private Account account;
 }

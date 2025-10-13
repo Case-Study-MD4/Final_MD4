@@ -13,5 +13,10 @@ public interface IOrderService {
     Order createOrder(CreateOrderDto dto);
 
     Order getOrderById(Long orderId);
+
+    boolean markCompleted(Long orderId);
+
+    List<Order> findByRestaurantId(Long restaurantId);
+
 }
 
