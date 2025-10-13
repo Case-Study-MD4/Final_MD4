@@ -1,7 +1,9 @@
 package com.example.case_study_module_4.service.impl;
 
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.repository.IFoodRepository;
+import com.example.case_study_module_4.repository.IRestaurantRepository;
 import com.example.case_study_module_4.service.IFoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class FoodService implements IFoodService {
 
     @Autowired
     private IFoodRepository foodRepository;
+
+    @Autowired
+    private IRestaurantRepository restaurantRepository;
 
     public List<Food> findTopFoods() {
         return foodRepository.findTop8ByOrderByIdDesc();
@@ -42,6 +47,11 @@ public class FoodService implements IFoodService {
     @Override
     public List<Food> searchByTitle(String keyword) {
         return foodRepository.searchByTitle(keyword);
+    }
+
+    @Override
+    public List<Food> findByRestaurantId(Long restaurantId) {
+        return foodRepository.findByRestaurantId(restaurantId);
     }
 
 

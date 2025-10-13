@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đơn hàng nhà hàng</title>
+  <th:block th:replace="~{common/template::library}"></th:block>
+</head>
+<body>
+<div th:replace="~{common/template::headerRestaurant}"></div>
+
+<div class="container py-4">
+  <h2>📦 Danh sách đơn hàng</h2>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Mã đơn</th>
+      <th>Khách hàng</th>
+      <th>Ngày đặt</th>
+      <th>Tổng tiền</th>
+      <th>Trạng thái</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+      <td th:text="${order.id}"></td>
+      <td th:text="${order.user.fullname}"></td>
+      <td th:text="${#dates.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></td>
+      <td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+      <td th:text="${order.status}"></td>
+      <td>
+        <form th:if="${order.status != 'Hoàn thành'}"
+              th:action="@{/restaurant/orders/{id}/complete(id=${order.id})}"
+              method="post">
+          <button type="submit" class="btn btn-success btn-sm">✅ Xác nhận hoàn thành</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div th:replace="~{common/template::footer}"></div>
+</body>
+</html>

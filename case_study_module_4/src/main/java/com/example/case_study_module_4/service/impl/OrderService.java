@@ -88,5 +88,17 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
     }
 
+    @Override
+    public boolean markCompleted(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với id = " + orderId));
+        order.setStatus(0); // hoặc 1, tùy ý nghĩa bạn định nghĩa
+        orderRepository.save(order);
+        return true;
+    }
 
+    @Override
+    public List<Order> findByRestaurantId(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId);
+    }
 }

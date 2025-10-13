@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý món ăn</title>
+  <th:block th:replace="~{common/template::library}"></th:block>
+</head>
+<body>
+<div th:replace="~{common/template::headerRestaurant}"></div>
+
+<div class="container py-4">
+  <h2>🍳 Danh sách món ăn của <span th:text="${restaurant.title}"></span></h2>
+  <a th:href="@{/restaurant/foods/new}" class="btn btn-danger mb-3">➕ Thêm món mới</a>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Tên món</th>
+      <th>Giá</th>
+      <th>Thời gian làm</th>
+      <th>Ảnh</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="food : ${foods}">
+      <td th:text="${food.title}"></td>
+      <td th:text="${food.price} + ' đ'"></td>
+      <td th:text="${food.timeShip}"></td>
+      <td><img th:src="@{${food.image}}" width="80"></td>
+      <td>
+        <a th:href="@{/restaurant/foods/edit/{id}(id=${food.id})}" class="btn btn-warning btn-sm">Sửa</a>
+        <a th:href="@{/restaurant/foods/delete/{id}(id=${food.id})}" class="btn btn-danger btn-sm"
+           onclick="return confirm('Xác nhận xóa món này?')">Xóa</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div th:replace="~{common/template::footer}"></div>
+</body>
+</html>

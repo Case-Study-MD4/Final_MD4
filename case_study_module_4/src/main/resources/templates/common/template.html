@@ -47,7 +47,7 @@
 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item mx-2"><a class="nav-link" th:href="@{/home}">Trang chủ</a></li>
-                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurants}">Nhà hàng</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurant}">Nhà hàng</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" th:href="@{/menu}">Giỏ hàng</a></li>
                     <!-- Nếu chưa đăng nhập -->
                     <li class="nav-item mx-2"
@@ -73,6 +73,65 @@
                         </ul>
                     </li>
                     
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<!-- ================= HEADER RESTAURANT================= -->
+<div th:fragment="headerRestaurant">
+    <nav class="navbar navbar-expand-lg navbar-dark py-3"
+         style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-white" th:href="@{/home}">🍔 𝓕𝓸𝓸𝓭𝓝𝓸𝔀</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav1">
+                <form th:action="@{/search}" method="get"
+                      class="d-flex mx-lg-auto my-2 my-lg-0" role="search"
+                      style="max-width: 400px; width: 100%;">
+                    <input
+                            type="text"
+                            name="keyword"
+                            class="form-control me-2 rounded-pill px-3"
+                            placeholder="🔍 Tìm món, nhà hàng..."
+                            aria-label="Search"
+                            required>
+                    <button class="btn btn-outline-light rounded-pill px-3" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurant/dashboard}">Thông tin nhà hàng</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurant/foods}">Quản lý món ăn</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" th:href="@{/restaurant/orders}">Đơn hàng</a></li>
+                    <!-- Nếu chưa đăng nhập -->
+                    <li class="nav-item mx-2"
+                        sec:authorize="isAnonymous()">
+                        <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
+                    </li>
+
+                    <!-- Nếu đã đăng nhập -->
+                    <li class="nav-item mx-2 dropdown"
+                        sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown1" role="button" data-bs-toggle="dropdown">
+                            👤 <span sec:authentication="name">Tài khoản</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Thông tin tài khoản</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" th:href="@{/cart}"><i class="fa-solid fa-cart-plus"></i></a>
+                    </li>
                 </ul>
             </div>
         </div>
