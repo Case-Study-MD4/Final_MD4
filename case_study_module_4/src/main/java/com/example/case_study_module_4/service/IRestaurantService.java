@@ -13,4 +13,6 @@ public interface IRestaurantService {
 
     Restaurant findByAccountId(Long accountId);
     void deleteRestaurantAndFoods(Long id);
+
+    long countActive();
 }

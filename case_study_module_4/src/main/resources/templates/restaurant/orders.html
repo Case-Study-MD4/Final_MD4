@@ -25,7 +25,7 @@
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
       <td th:text="${order.user.fullname}"></td>
-      <td th:text="${#dates.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></td>
+      <td th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></td>
       <td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
       <td th:text="${order.status}"></td>
       <td>
