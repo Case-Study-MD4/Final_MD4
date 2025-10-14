@@ -570,7 +570,7 @@
 
 <!-- ===== JS ===== -->
 <script th:inline="javascript">
-    let cart = [];
+/*    let cart = [];
 
     // Thêm món
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
@@ -682,13 +682,171 @@
 
     // Khi load trang
     window.addEventListener('load', () => {
-        const initialCart = /*[[${cartItems}]]*/ [];
+        const initialCart = [[${cartItems}]];
         if (initialCart.length > 0) {
             const restaurantId = initialCart[0].restaurantId;
             cart = initialCart;
             updateCartUI(cart, restaurantId);
         }
+    });*/
+
+let cart = [];
+
+// Thêm món
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const foodId = btn.dataset.id;
+        const resId = btn.dataset.resid;
+        const quantity = parseInt(btn.parentElement.querySelector('.quantity-input').value);
+
+        fetch('/menu/add-to-cart', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `foodId=${foodId}&quantity=${quantity}&restaurantId=${resId}`
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                cart = data.cart;
+                updateCartUI(cart, data.restaurantId);
+            });
     });
+});
+
+// Cập nhật số lượng trong giỏ hàng
+function updateCartItem(foodId, quantity, restaurantId) {
+    fetch('/menu/update-cart', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `foodId=${foodId}&quantity=${quantity}&restaurantId=${restaurantId}`
+    })
+        .then(resp => resp.json())
+        .then(data => {
+            cart = data.cart;
+            updateCartUI(cart, data.restaurantId);
+        });
+}
+
+// Xóa món khỏi giỏ hàng
+function removeCartItem(foodId, restaurantId) {
+    fetch('/menu/remove-from-cart', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `foodId=${foodId}&restaurantId=${restaurantId}`
+    })
+        .then(resp => resp.json())
+        .then(data => {
+            cart = data.cart;
+            updateCartUI(cart, data.restaurantId || null);
+        });
+}
+
+// Cập nhật UI
+function updateCartUI(cart, restaurantId) {
+    const tbody = document.getElementById('cart-body');
+    const table = document.getElementById('cart-table');
+    const empty = document.getElementById('empty-cart');
+    const hiddenItems = document.getElementById('hidden-items');
+    const checkoutBtn = document.querySelector('.btn-order');
+    const cartSummary = document.getElementById('cart-summary');
+    const cartBadge = document.getElementById('cart-badge');
+
+    tbody.innerHTML = '';
+    hiddenItems.innerHTML = '';
+
+    if (cart.length === 0) {
+        table.style.display = 'none';
+        cartSummary.style.display = 'none';
+        empty.style.display = 'block';
+        checkoutBtn.disabled = true;
+        cartBadge.style.display = 'none';
+        document.getElementById('restaurantId').value = '';
+        document.getElementById('cart-total').innerText = '0 ₫';
+        return;
+    }
+
+    table.style.display = 'table';
+    cartSummary.style.display = 'block';
+    empty.style.display = 'none';
+    checkoutBtn.disabled = false;
+    cartBadge.style.display = 'flex';
+    cartBadge.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+    let total = 0;
+    cart.forEach((item, index) => {
+        const subtotal = parseFloat(item.price) * item.quantity;
+        total += subtotal;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.foodName}</td>
+            <td class="qty-cell">
+                <button class="qty-btn" data-foodid="${item.foodId}" data-action="dec">−</button>
+                <span>${item.quantity}</span>
+                <button class="qty-btn" data-foodid="${item.foodId}" data-action="inc">+</button>
+            </td>
+            <td>${parseFloat(item.price).toLocaleString('vi-VN')} ₫</td>
+            <td>${subtotal.toLocaleString('vi-VN')} ₫</td>
+            <td><button class="remove-item" data-foodid="${item.foodId}">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+
+        hiddenItems.innerHTML += `
+            <input type="hidden" name="foodIds" value="${item.foodId}">
+            <input type="hidden" name="quantities" value="${item.quantity}">
+        `;
+    });
+
+    document.getElementById('cart-total').innerText = total.toLocaleString('vi-VN') + ' ₫';
+    document.getElementById('restaurantId').value = restaurantId;
+
+    attachCartEvents();
+}
+
+// Gắn sự kiện tăng/giảm/xóa
+function attachCartEvents() {
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const foodId = btn.dataset.foodid;
+            const action = btn.dataset.action;
+            const restaurantId = document.getElementById('restaurantId').value;
+
+            // Tìm item trong cart
+            const item = cart.find(item => item.foodId == foodId);
+            if (!item) return;
+
+            let newQuantity = item.quantity;
+
+            if (action === 'inc') {
+                newQuantity++;
+            } else if (action === 'dec' && item.quantity > 1) {
+                newQuantity--;
+            }
+
+            // Gọi API cập nhật
+            updateCartItem(foodId, newQuantity, restaurantId);
+        });
+    });
+
+    document.querySelectorAll('.remove-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const foodId = btn.dataset.foodid;
+            const restaurantId = document.getElementById('restaurantId').value;
+
+            // Gọi API xóa
+            removeCartItem(foodId, restaurantId);
+        });
+    });
+}
+
+// Khi load trang
+window.addEventListener('load', () => {
+    const initialCart = [[${cartItems}]];
+    if (initialCart && initialCart.length > 0) {
+        const restaurantId = initialCart[0].restaurantId;
+        cart = initialCart;
+        updateCartUI(cart, restaurantId);
+    }
+});
 </script>
 
 
