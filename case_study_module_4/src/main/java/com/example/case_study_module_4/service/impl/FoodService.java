@@ -1,25 +1,24 @@
 package com.example.case_study_module_4.service.impl;
 
 import com.example.case_study_module_4.entity.Food;
-import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.repository.IFoodRepository;
 import com.example.case_study_module_4.repository.IRestaurantRepository;
 import com.example.case_study_module_4.service.IFoodService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FoodService implements IFoodService {
 
-    @Autowired
-    private IFoodRepository foodRepository;
+    private final IFoodRepository foodRepository;
+    private final IRestaurantRepository restaurantRepository;
+    private final CloudinaryService cloudinaryService;
 
-    @Autowired
-    private IRestaurantRepository restaurantRepository;
-
+    @Override
     public List<Food> findTopFoods() {
         return foodRepository.findTop8ByOrderByIdDesc();
     }
@@ -41,7 +40,7 @@ public class FoodService implements IFoodService {
 
     @Override
     public void delete(Long id) {
-     foodRepository.deleteById(id);
+        foodRepository.deleteById(id);
     }
 
     @Override
@@ -53,7 +52,6 @@ public class FoodService implements IFoodService {
     public List<Food> findByRestaurantId(Long restaurantId) {
         return foodRepository.findByRestaurantId(restaurantId);
     }
-
 
 
 }
