@@ -9,11 +9,11 @@
 <div th:replace="~{common/template::headerRestaurant}"></div>
 
 <div class="container py-4">
-  <h2>🍳 Danh sách món ăn của <span th:text="${restaurant.title}"></span></h2>
-  <a th:href="@{/restaurant/foods/new}" class="btn btn-danger mb-3">➕ Thêm món mới</a>
+  <h2> Danh sách món ăn của <span th:text="${restaurant.title}"></span></h2>
+  <a th:href="@{/restaurant/foods/new}" class="btn btn-danger mb-3"> Thêm món mới</a>
 
-  <table class="table table-striped">
-    <thead>
+  <table class="table table-striped align-middle">
+    <thead class="table-dark">
     <tr>
       <th>Tên món</th>
       <th>Giá</th>
@@ -25,19 +25,60 @@
     <tbody>
     <tr th:each="food : ${foods}">
       <td th:text="${food.title}"></td>
-      <td th:text="${food.price} + ' đ'"></td>
+      <td th:text="${#numbers.formatDecimal(food.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
       <td th:text="${food.timeShip}"></td>
-      <td><img th:src="@{${food.image}}" width="80"></td>
+      <td><img th:src="@{${food.image}}" width="80" class="rounded"></td>
       <td>
-        <a th:href="@{/restaurant/foods/edit/{id}(id=${food.id})}" class="btn btn-warning btn-sm">Sửa</a>
-        <a th:href="@{/restaurant/foods/delete/{id}(id=${food.id})}" class="btn btn-danger btn-sm"
-           onclick="return confirm('Xác nhận xóa món này?')">Xóa</a>
+        <a th:href="@{/restaurant/foods/edit/{id}(id=${food.id})}" class="btn btn-warning btn-sm me-2">
+           Sửa
+        </a>
+        <button class="btn btn-danger btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal"
+                th:attr="data-id=${food.id}, data-title=${food.title}">
+           Xóa
+        </button>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
 
+<!-- 🔻 Modal xác nhận xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa món <strong id="foodTitle"></strong> không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Hủy</button>
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger"> Xóa</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div th:replace="~{common/template::footer}"></div>
+
+<script>
+  // Khi mở modal, cập nhật thông tin món ăn
+  const deleteModal = document.getElementById('confirmDeleteModal');
+  deleteModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const id = button.getAttribute('data-id');
+    const title = button.getAttribute('data-title');
+
+    const titleElem = deleteModal.querySelector('#foodTitle');
+    const confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
+
+    titleElem.textContent = title;
+    confirmBtn.href = `/restaurant/foods/delete/${id}`;
+  });
+</script>
 </body>
 </html>
