@@ -101,11 +101,7 @@ public class RestaurantService implements IRestaurantService {
      * Tính tổng doanh thu toàn hệ thống
      */
     public BigDecimal getTotalRevenue() {
-        List<Order> orders = orderRepository.findAll();
-        if (orders.isEmpty()) return BigDecimal.ZERO;
-        return orders.stream()
-                .map(Order::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return orderRepository.sumRevenueByStatus(2);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.case_study_module_4.controller;
 
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.exception.FoodNotFoundException;
 import com.example.case_study_module_4.service.IFoodService;
 import com.example.case_study_module_4.service.impl.CloudinaryService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,9 @@ public class FoodController {
         if (food == null) {
             return "redirect:/restaurant/foods";
         }
+        Food food = java.util.Optional.ofNullable(foodService.findById(id))
+                .orElseThrow(() -> new FoodNotFoundException(id));
+
         model.addAttribute("food", food);
         return "food/detail";
     }

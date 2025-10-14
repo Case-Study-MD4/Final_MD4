@@ -23,7 +23,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark py-3"
          style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" th:href="@{/home}">🍔 𝓕𝓸𝓸𝓭𝓝𝓸𝔀</a>
+            <a th:href="@{/home}" class="navbar-brand d-flex align-items-center">
+                <img th:src="@{/images/home/logo2.png}" alt="Osahaneat Logo" style="height: 105px;">
+            </a>
+
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -59,11 +62,15 @@
                     <li class="nav-item mx-2 dropdown"
                         sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            👤 <span sec:authentication="name">Tài khoản</span>
+                            <i class="fi fi-rr-user"></i> <span sec:authentication="name">Tài khoản</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li sec:authorize="hasRole('ADMIN')">
-                                <a class="dropdown-item" th:href="@{/profile/admin}">Thông tin tài khoản</a>
+                                <a class="dropdown-item" th:href="@{/profile/admin}">Quản lý</a>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/orders/history}">
+                                   Lịch sử đơn hàng
+                                </a>
                             </li>
 
                             <li sec:authorize="hasRole('RESTAURANT_OWNER')">
@@ -85,8 +92,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark py-3"
          style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" >🍔 𝓕𝓸𝓸𝓭𝓝𝓸𝔀</a>
-
+                <img th:src="@{/images/home/logo2.png}" alt="Osahaneat Logo" style="height: 105px;">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -121,7 +127,7 @@
                     <li class="nav-item mx-2 dropdown"
                         sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown1" role="button" data-bs-toggle="dropdown">
-                            👤 <span sec:authentication="name">Tài khoản</span>
+                             <span sec:authentication="name">Tài khoản</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" th:href="@{/profile}">Thông tin tài khoản</a></li>
@@ -156,7 +162,7 @@
         </div>
         <hr style="border-color: rgba(255,255,255,0.2);">
         <div class="text-center">
-            <small>© 2025 FoodNow — Designed by TaamLee</small>
+            <small>© 2025 FoodNow — Designed by TripleT</small>
         </div>
     </div>
 </footer>

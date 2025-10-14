@@ -3,11 +3,13 @@ package com.example.case_study_module_4.common;
 import lombok.Getter;
 
 @Getter
-public enum OrderStatus {
+public enum
+OrderStatus {
 
-    PROCESSING(0),
-    COMPLETED(1),
-    CANCELLED(2);
+    PENDING(0),
+    PROCESSING(1),
+    COMPLETED(2),
+    CANCELLED(3);
 
     private final int code;
 
