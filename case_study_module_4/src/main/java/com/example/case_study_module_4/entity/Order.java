@@ -53,5 +53,15 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
+    public String getStatusText() {
+        return switch (status) {
+            case 0 -> "Mới";
+            case 1 -> "Đang chờ";
+            case 2 -> "Hoàn thành";
+            case 3 -> "Đã hủy";
+            default -> "Không xác định";
+        };
+    }
+
 }
 

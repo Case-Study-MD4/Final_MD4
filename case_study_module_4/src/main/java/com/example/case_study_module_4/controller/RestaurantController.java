@@ -1,5 +1,6 @@
 package com.example.case_study_module_4.controller;
 import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.entity.Order;
 import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.entity.User;
 import com.example.case_study_module_4.service.*;
@@ -8,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.example.case_study_module_4.service.IRestaurantService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -135,4 +135,29 @@ public class RestaurantController {
         orderService.markCompleted(id);
         return "redirect:/restaurant/orders";
     }
+
+    @PostMapping("/orders/{id}/next")
+    public String nextStatus(@PathVariable Long id) {
+        Order order = orderService.findById(id);
+        if (order != null) {
+            switch (order.getStatus()) {
+                case 0 -> order.setStatus(1);
+                case 1 -> order.setStatus(2);
+            }
+            orderService.save(order);
+        }
+        return "redirect:/restaurant/orders";
+    }
+
+    @PostMapping("/orders/{id}/cancel")
+    public String cancelOrder(@PathVariable Long id) {
+        Order order = orderService.findById(id);
+        if (order != null && order.getStatus() != 2) {
+            order.setStatus(3); // Hủy
+            orderService.save(order);
+        }
+        return "redirect:/restaurant/orders";
+    }
+
+
 }

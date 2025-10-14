@@ -101,4 +101,14 @@ public class OrderService implements IOrderService {
     public List<Order> findByRestaurantId(Long restaurantId) {
         return orderRepository.findByRestaurantId(restaurantId);
     }
+
+    @Override
+    public Order save(Order order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElse(null);
+    }
 }
