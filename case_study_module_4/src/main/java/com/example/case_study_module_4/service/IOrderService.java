@@ -18,5 +18,8 @@ public interface IOrderService {
 
     List<Order> findByRestaurantId(Long restaurantId);
 
+    Order save(Order order);
+
+    Order findById(Long id);
 }
 

@@ -10,11 +10,12 @@
 
 <div class="container py-4">
   <h2>📦 Danh sách đơn hàng</h2>
-  <table class="table table-bordered">
-    <thead>
+  <table class="table table-bordered text-center align-middle">
+    <thead class="table-light">
     <tr>
       <th>Mã đơn</th>
       <th>Khách hàng</th>
+      <th>SĐT</th> <!-- ✅ thêm cột -->
       <th>Ngày đặt</th>
       <th>Tổng tiền</th>
       <th>Trạng thái</th>
@@ -25,15 +26,39 @@
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
       <td th:text="${order.user.fullname}"></td>
+
+      <!-- ✅ Hiển thị số điện thoại -->
+      <td th:text="${order.user.phone != null ? order.user.phone : 'Chưa có'}"></td>
+
       <td th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}"></td>
       <td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-      <td th:text="${order.status}"></td>
+
+      <!-- Trạng thái -->
       <td>
-        <form th:if="${order.status != 'Hoàn thành'}"
-              th:action="@{/restaurant/orders/{id}/complete(id=${order.id})}"
-              method="post">
-          <button type="submit" class="btn btn-success btn-sm">✅ Xác nhận hoàn thành</button>
-        </form>
+        <span th:classappend="${order.status == 2} ? 'badge bg-success' :
+                              (${order.status == 1} ? 'badge bg-warning text-dark' :
+                              (${order.status == 3} ? 'badge bg-danger' : 'badge bg-secondary'))"
+              th:text="${order.statusText}"></span>
+      </td>
+
+      <!-- Hành động -->
+      <td>
+        <div th:if="${order.status != 2 and order.status != 3}" class="d-flex gap-2 justify-content-center">
+          <!-- Xác nhận -->
+          <form th:action="@{/restaurant/orders/{id}/next(id=${order.id})}" method="post"
+                onsubmit="return confirm('Xác nhận chuyển trạng thái đơn hàng này?');">
+            <button type="submit" class="btn btn-success btn-sm">
+              <span th:text="${order.status == 0 ? '✅ Xác nhận' :
+                              (order.status == 1 ? '✅ Hoàn thành' : '✅ Xác nhận')}"></span>
+            </button>
+          </form>
+
+          <!-- Hủy -->
+          <form th:action="@{/restaurant/orders/{id}/cancel(id=${order.id})}" method="post"
+                onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?');">
+            <button type="submit" class="btn btn-danger btn-sm">❌ Hủy đơn</button>
+          </form>
+        </div>
       </td>
     </tr>
     </tbody>
