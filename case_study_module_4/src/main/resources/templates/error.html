@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Lỗi ' + ${status} + ' | FoodNow'">Lỗi | FoodNow</title>
+
+    <!-- Thư viện chung -->
+    <th:block th:replace="~{common/template::library}"></th:block>
+
+    <style>
+        body { background: #f7f7f8; font-family: 'Poppins', sans-serif; color:#333; }
+        .err-wrap{
+            max-width: 760px; margin: 32px auto; background:#fff; border-radius:16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.06); overflow:hidden;
+        }
+        .err-header{
+            background: linear-gradient(135deg, #ff4d4f, #ff7a45);
+            color:#fff; padding:22px 26px; display:flex; align-items:center; gap:14px;
+        }
+        .err-header i{ font-size:28px }
+        .err-body{ padding:24px 26px }
+        .err-code{ font-weight:700; color:#fff !important }
+        .btns{ display:flex; gap:10px; margin-top:18px; flex-wrap: wrap;}
+        .btns a{ padding:10px 14px; border-radius:10px; text-decoration:none }
+        .btn-primary{ background:#dc3545; color:#fff }
+        .btn-outline{ border:1px solid #bbb; color:#333; background:#fff }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<div th:replace="~{common/template::header}"></div>
+
+<section class="container py-4">
+    <div class="err-wrap">
+        <div class="err-header">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <h4 class="m-0" th:text="${err}">Đã xảy ra lỗi</h4>
+                <div class="small">Mã lỗi: <span class="err-code" th:text="${status}">400</span></div>
+            </div>
+        </div>
+
+        <div class="err-body">
+            <p class="mb-1" th:text="${errMess}">Không tìm thấy dữ liệu.</p>
+            <!-- Nếu muốn hiện thêm chi tiết/đường dẫn:
+            <p class="text-muted small mb-0">Đường dẫn: <span th:text="${path}">/</span></p>
+            -->
+
+            <div class="btns">
+                <a href="javascript:history.back()" class="btn-primary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                </a>
+                <a th:href="@{/home}" class="btn-outline">
+                    <i class="fa-solid fa-house me-1"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<div th:replace="~{common/template::footer}"></div>
+
+</body>
+</html>

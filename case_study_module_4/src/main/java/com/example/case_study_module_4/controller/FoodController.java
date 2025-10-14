@@ -1,5 +1,7 @@
 package com.example.case_study_module_4.controller;
 
+import com.example.case_study_module_4.entity.Food;
+import com.example.case_study_module_4.exception.FoodNotFoundException;
 import com.example.case_study_module_4.service.IFoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,10 +25,9 @@ public class FoodController {
     // Chi tiết món ăn
     @GetMapping("/{id}")
     public String showFoodDetail(@PathVariable Long id, Model model) {
-        var food = foodService.findById(id);
-        if (food == null) {
-            return "redirect:/foods";
-        }
+        Food food = java.util.Optional.ofNullable(foodService.findById(id))
+                .orElseThrow(() -> new FoodNotFoundException(id));
+
         model.addAttribute("food", food);
         return "food/detail";
     }

@@ -3,6 +3,7 @@ import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.Order;
 import com.example.case_study_module_4.entity.Restaurant;
 import com.example.case_study_module_4.entity.User;
+import com.example.case_study_module_4.exception.RestaurantNotFoundException;
 import com.example.case_study_module_4.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,11 +37,14 @@ public class RestaurantController {
     // ========== 2. Xem thực đơn 1 nhà hàng ==========
     @GetMapping("/{id}")
     public String viewRestaurantMenu(@PathVariable Long id, Model model) {
-        Restaurant restaurant = restaurantService.findById(id);
+        Restaurant restaurant = java.util.Optional.ofNullable(restaurantService.findById(id))
+                .orElseThrow(() -> new RestaurantNotFoundException(id));
+
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("foods", restaurant.getFoods());
         return "restaurant/menu";
     }
+
 
     // ========== 3. Trang dashboard chủ nhà hàng ==========
     @GetMapping("/dashboard")

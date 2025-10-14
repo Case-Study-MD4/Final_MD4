@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,10 +42,13 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
     )
     FROM Order o
     JOIN o.restaurant r
-    WHERE o.status = 0
+    WHERE o.status = 2
     GROUP BY r.title
     ORDER BY SUM(o.totalPrice) DESC
 """)
     List<RevenueDto> getRevenueStatistics();
+
+    @Query("select coalesce(sum(o.totalPrice), 0) from Order o where o.status = :status")
+    BigDecimal sumRevenueByStatus(@Param("status") int status);
 }
 
