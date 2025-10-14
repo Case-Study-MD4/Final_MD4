@@ -197,6 +197,12 @@ public class MenuController {
         }
         return cart;
     }
+    @PostMapping("/clear-cart")
+    @ResponseBody
+    public ResponseEntity<?> clearCart(HttpSession session) {
+        session.removeAttribute("cart");
+        return ResponseEntity.ok(Map.of("success", true));
+    }
 
 }
 
