@@ -23,7 +23,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark py-3"
          style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" th:href="@{/home}">Osahaneat</a>
+            <a th:href="@{/home}" class="navbar-brand d-flex align-items-center">
+                <img th:src="@{/images/home/logo2.png}" alt="Osahaneat Logo" style="height: 105px;">
+            </a>
+
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -89,8 +92,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark py-3"
          style="background: linear-gradient(90deg, #ff4d4f, #ff7875); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" >Osahaneat</a>
-
+                <img th:src="@{/images/home/logo2.png}" alt="Osahaneat Logo" style="height: 105px;">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
