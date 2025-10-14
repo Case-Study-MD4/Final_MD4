@@ -5,6 +5,7 @@ import com.example.case_study_module_4.entity.*;
 import com.example.case_study_module_4.repository.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -135,4 +136,67 @@ public class MenuController {
         redirect.addFlashAttribute("message", "Thêm món mới thành công!");
         return "redirect:/menu";
     }
+
+
+    @PostMapping("/update-cart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateCartItem(
+            @RequestParam Long foodId,
+            @RequestParam int quantity,
+            @RequestParam Long restaurantId,
+            HttpSession session) {
+
+        // SỬA LẠI: dùng CartItemDto
+        List<CartItemDto> cart = getOrCreateCart(session);
+
+        // Tìm và cập nhật item
+        for (CartItemDto item : cart) {
+            if (item.getFoodId().equals(foodId)) {
+                item.setQuantity(quantity);
+                break;
+            }
+        }
+
+        session.setAttribute("cart", cart);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("cart", cart);
+        response.put("restaurantId", restaurantId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/remove-from-cart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> removeFromCart(
+            @RequestParam Long foodId,
+            @RequestParam Long restaurantId,
+            HttpSession session) {
+
+        // SỬA LẠI: dùng CartItemDto
+        List<CartItemDto> cart = getOrCreateCart(session);
+
+        // Xóa item khỏi giỏ hàng
+        cart.removeIf(item -> item.getFoodId().equals(foodId));
+
+        session.setAttribute("cart", cart);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("cart", cart);
+        response.put("restaurantId", cart.isEmpty() ? null : restaurantId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // SỬA LẠI: phương thức getOrCreateCart dùng CartItemDto
+    private List<CartItemDto> getOrCreateCart(HttpSession session) {
+        List<CartItemDto> cart = (List<CartItemDto>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+            session.setAttribute("cart", cart);
+        }
+        return cart;
+    }
+
 }
+

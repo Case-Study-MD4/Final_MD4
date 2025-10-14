@@ -3,7 +3,8 @@ package com.example.case_study_module_4.common;
 import lombok.Getter;
 
 @Getter
-public enum OrderStatus {
+public enum
+OrderStatus {
 
     PROCESSING(0),
     COMPLETED(1),
