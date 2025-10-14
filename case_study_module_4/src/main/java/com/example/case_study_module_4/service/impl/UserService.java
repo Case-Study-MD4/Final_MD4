@@ -4,6 +4,7 @@ package com.example.case_study_module_4.service.impl;
 import com.example.case_study_module_4.dto.UserDto;
 
 import com.example.case_study_module_4.entity.User;
+import com.example.case_study_module_4.exception.UserNotFoundException;
 import com.example.case_study_module_4.repository.IUserRepository;
 import com.example.case_study_module_4.service.IUserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,23 @@ public class UserService implements IUserService {
     @Override
     public List<User> findAll() {
        return repository.findAll();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    @Override
+    public User getByIdOrThrow(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
 }

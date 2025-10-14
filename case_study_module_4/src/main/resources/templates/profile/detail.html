@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/admin_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết người dùng</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fa-solid fa-user me-2"></i>Chi tiết người dùng</h4>
+            <div class="d-flex gap-2">
+                <!-- Quay lại danh sách -->
+                <a th:href="@{/profile/admin/users}" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Quay lại
+                </a>
+
+                <!-- Sửa -->
+                <a th:href="@{/profile/admin/users/{id}/edit(id=${user.id})}" class="btn btn-warning btn-sm">
+                    <i class="fa-solid fa-pen me-1"></i>Sửa
+                </a>
+
+                <!-- Xoá (POST + CSRF null-safe) -->
+                <form th:action="@{/profile/admin/users/{id}/delete(id=${user.id})}"
+                      method="post" class="d-inline"
+                      onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này không?');">
+
+                    <th:block th:with="t=${#request.getAttribute('_csrf')}" th:if="${t != null}">
+                        <input type="hidden" th:name="${t.parameterName}" th:value="${t.token}">
+                    </th:block>
+
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-trash me-1"></i>Xoá
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row g-4">
+                <!-- Avatar -->
+                <div class="col-md-3 text-center">
+                    <img th:src="${user.avatar != null && !#strings.isEmpty(user.avatar) ? user.avatar : '/images/avatar-default.png'}"
+                         alt="avatar" class="img-thumbnail rounded-circle mb-2"
+                         style="width:140px;height:140px;object-fit:cover;">
+                    <div class="small text-muted" th:text="'ID: #' + ${user.id}">ID: #0</div>
+                </div>
+
+                <!-- Thông tin -->
+                <div class="col-md-9">
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Tên đăng nhập</div>
+                        <div class="col-sm-8"
+                             th:text="${user.account != null ?
+                                        (user.account.userName != null ? user.account.userName :
+                                          (user.account.username != null ? user.account.username : '—')) : '—'}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Họ tên</div>
+                        <div class="col-sm-8" th:text="${user.fullname}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Vai trò</div>
+                        <div class="col-sm-8">
+                          <span class="badge text-bg-secondary"
+                                th:text="${user.account != null && user.account.role != null ? user.account.role.roleName : 'N/A'}">N/A</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Email</div>
+                        <div class="col-sm-8"
+                             th:text="${user.account != null ? user.account.email : '—'}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Số điện thoại</div>
+                        <div class="col-sm-8" th:text="${user.phone != null ? user.phone : '—'}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Địa chỉ</div>
+                        <div class="col-sm-8" th:text="${user.address != null ? user.address : '—'}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Ngày tạo</div>
+                        <div class="col-sm-8"
+                             th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">—</div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 text-muted">Trạng thái</div>
+                        <div class="col-sm-8">
+                          <span class="badge"
+                                th:classappend="${user.active} ? ' text-bg-success' : ' text-bg-secondary'"
+                                th:text="${user.active} ? 'Hoạt động' : 'Ngưng hoạt động'">Hoạt động</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

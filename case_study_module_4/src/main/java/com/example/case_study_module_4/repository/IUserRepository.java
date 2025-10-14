@@ -2,6 +2,7 @@ package com.example.case_study_module_4.repository;
 
 
 import com.example.case_study_module_4.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,5 +26,11 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.account.role.roleName = 'ROLE_RESTAURANT_OWNER'")
     Long countAllOwners();
-
+//    // Đảm bảo entity Account có field "username" (không phải "userName")
+//    Optional<User> findByAccount_Username(String userName);
+//
+//
+//    // (tuỳ chọn) load kèm account/role khi cần
+//    @EntityGraph(attributePaths = {"account", "account.role"})
+//    Optional<User> findWithAccountById(Long id);
 }
