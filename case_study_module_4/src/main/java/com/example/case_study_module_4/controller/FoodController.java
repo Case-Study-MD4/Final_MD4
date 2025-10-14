@@ -32,7 +32,7 @@ public class FoodController {
         if (food == null) {
             return "redirect:/restaurant/foods";
         }
-        Food food = java.util.Optional.ofNullable(foodService.findById(id))
+         food = java.util.Optional.ofNullable(foodService.findById(id))
                 .orElseThrow(() -> new FoodNotFoundException(id));
 
         model.addAttribute("food", food);
