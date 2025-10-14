@@ -313,12 +313,13 @@
                 </div>
             </div>
             <div class="status-container">
-                <span th:switch="${order.status}">
-                    <span th:case="0" class="status status-pending">Đang xử lý</span>
-                    <span th:case="1" class="status status-completed">Hoàn thành</span>
-                    <span th:case="2" class="status status-canceled">Đã hủy</span>
-                    <span th:case="*" class="status">Không xác định</span>
-                </span>
+             <span th:switch="${order.status}">
+    <span th:case="0" class="status status-pending">Chờ xác nhận</span>
+    <span th:case="1" class="status status-pending">Đang chế biến</span>
+    <span th:case="2" class="status status-completed">Hoàn thành</span>
+    <span th:case="3" class="status status-canceled">Đã hủy</span>
+    <span th:case="*" class="status">Không xác định</span>
+            </span>
             </div>
         </div>
 

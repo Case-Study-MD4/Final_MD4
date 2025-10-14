@@ -4,6 +4,25 @@
   <meta charset="UTF-8">
   <title th:text="${food.id != null} ? 'Chỉnh sửa món ăn' : 'Thêm món mới'"></title>
   <th:block th:replace="~{common/template::library}"></th:block>
+
+  <style>
+    #preview {
+      display: block;
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .loading {
+      display: none;
+      color: #e67e22;
+      font-style: italic;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 <body>
 <div th:replace="~{common/template::headerRestaurant}"></div>
@@ -11,7 +30,6 @@
 <div class="container py-4">
   <h2 class="mb-4" th:text="${food.id != null} ? '✏️ Chỉnh sửa món ăn' : '➕ Thêm món mới'"></h2>
 
-  <!-- 🔧 Quan trọng: sử dụng biến 'action' được truyền từ controller -->
   <form th:action="@{${action}}" th:object="${food}" method="post" enctype="multipart/form-data"
         class="needs-validation" novalidate>
 
@@ -55,17 +73,18 @@
       <div class="invalid-feedback">Vui lòng chọn danh mục.</div>
     </div>
 
-    <!-- Ảnh -->
+    <!-- Ảnh món ăn -->
     <div class="mb-3">
-      <label for="image" class="form-label">Ảnh món ăn</label>
-      <input type="file" id="image" name="imageFile" class="form-control">
-      <div class="form-text">Để trống nếu không thay đổi ảnh.</div>
+      <label for="imageFile" class="form-label">Ảnh món ăn</label>
+      <input type="file" id="imageFile" accept="image/*" class="form-control">
 
-      <div th:if="${food.image != null}" class="mt-2">
-        <p>Ảnh hiện tại:</p>
-        <img th:src="@{'/uploads/' + ${food.image}}" alt="Ảnh món"
-             class="img-thumbnail" style="max-width: 200px;">
-      </div>
+      <div class="loading" id="loading">⏳ Đang tải ảnh lên Cloudinary...</div>
+
+      <img id="preview" th:if="${food.image != null}" th:src="${food.image}" alt="Ảnh món ăn" style="display:block;">
+      <img id="preview" alt="Ảnh xem trước" style="display:none;">
+
+      <!-- hidden field để lưu URL Cloudinary -->
+      <input type="hidden" id="imageUrl" th:field="*{image}">
     </div>
 
     <!-- Nút hành động -->
@@ -92,7 +111,41 @@
         form.classList.add('was-validated')
       }, false)
     })
-  })()
+  })();
+
+  // === Upload Cloudinary ===
+  const cloudName = 'dhvihm9jq'; // 👉 Thay bằng Cloud name của bạn
+  const uploadPreset = 'unsigned_preset'; // 👉 Preset bạn tạo trong Cloudinary
+
+  const fileInput = document.getElementById('imageFile');
+  const preview = document.getElementById('preview');
+  const imageUrlInput = document.getElementById('imageUrl');
+  const loading = document.getElementById('loading');
+
+  fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    loading.style.display = 'block';
+    preview.style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', uploadPreset);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+    if (data.secure_url) {
+      imageUrlInput.value = data.secure_url;
+      preview.src = data.secure_url;
+      preview.style.display = 'block';
+    }
+    loading.style.display = 'none';
+  });
 </script>
 
 </body>

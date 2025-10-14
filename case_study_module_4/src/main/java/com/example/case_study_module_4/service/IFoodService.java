@@ -2,6 +2,7 @@ package com.example.case_study_module_4.service;
 
 import com.example.case_study_module_4.entity.Food;
 import com.example.case_study_module_4.entity.Restaurant;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,6 @@ public interface IFoodService {
     List<Food> searchByTitle(String keyword);
 
     List<Food> findByRestaurantId(Long restaurantId);
+
 
 }

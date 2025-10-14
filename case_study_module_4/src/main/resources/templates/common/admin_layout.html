@@ -19,59 +19,89 @@
       font-family: "Segoe UI", sans-serif;
     }
 
-    /* SIDEBAR */
+    /* ===== SIDEBAR ===== */
     .sidebar {
       width: 250px;
       position: fixed;
-      top: 0;
+      top: 75px; /* căn dưới header */
       bottom: 0;
       left: 0;
-      background-color: #1f2937;
-      color: #fff;
+      background-color: #ffffff; /* nền trắng đồng bộ */
+      color: #374151;
       display: flex;
       flex-direction: column;
       padding: 20px 15px;
-      box-shadow: 3px 0 10px rgba(0, 0, 0, 0.15);
+      border-right: 1px solid #e5e7eb;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
     }
 
     .sidebar h4 {
       font-weight: 600;
+      color: #1f2937;
     }
 
     .sidebar .nav-link {
-      color: #cbd5e1;
+      color: #374151;
       border-radius: 8px;
       padding: 10px 12px;
       margin-bottom: 6px;
       transition: all 0.2s ease;
       font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .sidebar .nav-link i {
       width: 22px;
+      text-align: center;
     }
 
-    .sidebar .nav-link:hover,
+    /* Hover + Active */
+    .sidebar .nav-link:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+      font-weight: 500;
+      transform: translateX(3px);
+    }
+
     .sidebar .nav-link.active {
-      background-color: #2563eb;
-      color: #fff;
-      transform: translateX(4px);
+      background-color: #3b82f6;
+      color: #ffffff;
+      font-weight: 500;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
     }
 
     .sidebar hr {
-      border-color: rgba(255, 255, 255, 0.15);
+      border-color: #e5e7eb;
     }
 
     .logout-btn {
       margin-top: auto;
     }
 
-    /* MAIN CONTENT */
+    .logout-btn .btn {
+      border-radius: 8px;
+      font-weight: 500;
+      color: #374151;
+      border-color: #d1d5db;
+      transition: 0.3s;
+    }
+
+    .logout-btn .btn:hover {
+      background-color: #ef4444;
+      border-color: #ef4444;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    }
+
+    /* ===== MAIN CONTENT ===== */
     .main-content {
       margin-left: 250px;
-      padding: 30px 40px;
+      margin-top: 75px;
+      padding: 40px 45px;
       background-color: #f5f7fa;
-      min-height: 100vh;
+      min-height: calc(100vh - 75px);
     }
 
     .card {
@@ -79,6 +109,57 @@
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
+
+    /* ===== BUTTON STYLE ===== */
+    .btn {
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background-color: #2563eb;
+      border: none;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1e40af;
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-success {
+      background-color: #22c55e;
+      border: none;
+    }
+
+    .btn-success:hover {
+      background-color: #15803d;
+      box-shadow: 0 3px 8px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-warning {
+      background-color: #facc15;
+      border: none;
+      color: #111827;
+    }
+
+    .btn-warning:hover {
+      background-color: #eab308;
+      box-shadow: 0 3px 8px rgba(234, 179, 8, 0.4);
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background-color: #b91c1c;
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4);
+    }
+
+
   </style>
 </head>
 
@@ -88,9 +169,6 @@
   <div class="d-flex" style="min-height: 100vh;">
     <!-- SIDEBAR -->
     <div class="sidebar">
-      <h4 class="text-center mb-4 mt-2">
-        <i class="fa-solid fa-user-shield me-2"></i>Admin Panel
-      </h4>
 
       <ul class="nav flex-column">
         <li class="nav-item">
