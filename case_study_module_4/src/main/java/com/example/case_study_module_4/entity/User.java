@@ -27,6 +27,11 @@ public class User {
     private String phone;
     private String address;
 
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
+
+    @Column(name = "active_email")
+    private Boolean activeEmail = true;
     // tiện ích: đồng bộ 2 chiều (nếu bạn set từ User)
     public void setAccount(Account account) {
         this.account = account;
