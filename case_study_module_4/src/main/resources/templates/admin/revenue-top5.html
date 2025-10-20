@@ -1,0 +1,16 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Nhà hàng</th>
+        <th>Tổng doanh thu (₫)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r, stat : ${top5}">
+        <td th:text="${stat.index + 1}"></td>
+        <td th:text="${r.restaurantName}"></td>
+        <td th:text="${#numbers.formatDecimal(r.totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+    </tr>
+    </tbody>
+</table>

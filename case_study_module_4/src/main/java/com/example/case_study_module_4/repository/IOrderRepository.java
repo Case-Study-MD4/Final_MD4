@@ -48,7 +48,20 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
 """)
     List<RevenueDto> getRevenueStatistics();
 
+
     @Query("select coalesce(sum(o.totalPrice), 0) from Order o where o.status = :status")
     BigDecimal sumRevenueByStatus(@Param("status") int status);
+//
+//    //top 5 nhà hàng dùng limit
+//    @Query(value = """
+//        SELECT r.name AS restaurantName,
+//               SUM(o.total_price) AS totalRevenue
+//        FROM orders o
+//        JOIN restaurants r ON o.restaurant_id = r.id
+//        GROUP BY r.id, r.name
+//        ORDER BY totalRevenue DESC
+//        LIMIT 5
+//        """, nativeQuery = true)
+//    List<Object[]> findTop5RestaurantsByRevenue();
 }
 

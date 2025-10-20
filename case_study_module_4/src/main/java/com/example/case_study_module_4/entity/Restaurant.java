@@ -1,5 +1,6 @@
 package com.example.case_study_module_4.entity;
 
+import com.example.case_study_module_4.entity.base.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "restaurants")
-public class Restaurant {
+public class Restaurant extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
