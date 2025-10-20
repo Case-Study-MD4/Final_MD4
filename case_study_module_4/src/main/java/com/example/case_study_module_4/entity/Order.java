@@ -1,6 +1,7 @@
 package com.example.case_study_module_4.entity;
 
 
+import com.example.case_study_module_4.entity.base.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

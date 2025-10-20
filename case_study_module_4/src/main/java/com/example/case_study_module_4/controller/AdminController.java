@@ -141,4 +141,11 @@ public class AdminController {
         model.addAttribute("newCustomers", 45); // hardcode tạm
         return "admin/admin_revenue";
     }
+
+
+//    @GetMapping("/top5")
+//    public String showTop5(Model model) {
+//        model.addAttribute("top5", revenueService.getTop5Revenue());
+//        return "admin/revenue-top5";
+//    }
 }
